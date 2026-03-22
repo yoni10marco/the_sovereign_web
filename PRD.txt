@@ -1,0 +1,97 @@
+Product Requirements Document (PRD): The Sovereign Web
+Version: 2.0 (Full Morphing Engine)
+
+Status: Ready for Development (AI-Native Architecture)
+
+1. Executive Summary
+The Sovereign Web is a generative social experiment where the website itself is the prize. Every 24 hours, the platform undergoes a total "Morph," changing its layout, purpose, and content based on a winning user proposal. It utilizes a Democratic AI-Governance model where users vote on the site's future using a regenerating "Pulse" currency.
+
+2. Core User Loop & Engagement
+A. The Pulse System (Retention Engine)
+To drive high Daily Active Users (DAU) and repeat visits:
+
+Mechanism: Users receive a set of "Likes" (voting power) that regenerates every 5 hours.
+
+Constraint: Likes do not stack. If not used within the 5-hour window, they expire.
+
+The Claim: Free users must view a 5-second reward ad to "claim" their next Pulse.
+
+Allocation: * Free Users: 5 Likes per Pulse.
+
+Pro Users: 25 Likes per Pulse (can stack up to 2 Pulses).
+
+B. The Morphing Cycle
+Submission: Users upload an Image + Text Prompt (e.g., "Make this a minimalist Italian cooking blog").
+
+Voting: The community votes on the "Idea."
+
+The Reset (00:00 UTC): The winning proposal is sent to the AI Architect (Gemini API- but maybe can change).
+
+Generation: The AI generates a full Site Configuration JSON including Layout, Typography, Copywriting, and Color Schemes.
+
+Deployment: The site frontend re-renders instantly for all users globally.
+
+3. Functional Requirements
+3.1. The AI Morphing Engine (Technical Core)
+The frontend must be a Stateless Shell that renders based on a site_config object.
+
+Component Registry: A library of 15+ "Atomic" components (Hero, Bento Grid, Article, Gallery, Ticker, etc.).
+
+AI Logic: The AI chooses which components to activate and injects data (Copy/Images) and styles (Tailwind classes/CSS Variables) into them.
+
+Sanitization: The AI output is restricted to JSON parameters; no raw JavaScript injection allowed (XSS prevention).
+
+3.2. Leaderboard & Voting
+Real-time Updates: Use Supabase Realtime or WebSockets to show live vote counts.
+
+Anti-Sniping: Any vote cast in the final 60 seconds of a cycle extends the timer by another 60 seconds.
+
+3.3. The Hall of Fame (Archives)
+Static Snapshots: A gallery of previous site "lives."
+
+Metadata: Each archive entry shows the winner's username, total votes, and the prompt used.
+
+3.4. Sovereign Spaces (Private Monetization)
+Direct Purchase: Users can buy a "Private Slot" (subdomain or path) for 24 hours.
+
+Customization: The buyer has "Dictator" rights over their space (no voting required).
+
+4. Monetization Strategy (Aggressive Revenue)
+4.1. The Sovereign Pass (Weekly Subscription) - $2.49/week
+Ad-Free: No banners, interstitials, or reward videos.
+
+Enhanced Pulse: 25 Likes/Pulse + 2-Pulse stacking.
+
+VIP Identity: Golden username in the leaderboard and "Pro" badge.
+
+4.2. Ad Inventory
+Sticky Banners: Top and bottom of the leaderboard.
+
+Interstitials: Triggered after a user submits a proposal.
+
+Reward Video: For "claiming" free Pulses or earning a +1 bonus Like.
+
+4.3. Micro-Transactions (IAP)
+Like Packs: 50 Likes for $0.99 (Immediate injection).
+
+The Nuclear Option: A one-time "Dislike Bomb" (-20 votes to a rival) for $4.99.
+
+5. Technical Stack (Recommended for AI-Native Dev)
+Frontend: Next.js 15 (App Router) + Tailwind CSS.
+
+Backend/DB: Supabase (Auth, Postgres, Realtime, Storage).
+
+Cache/Speed: Upstash Redis for high-frequency Like counts and Pulse timers.
+
+Payments: Polar.
+
+LLM API: Gemini (for the Morphing JSON).
+
+Deployment: Vercel (Edge Functions for the Morphing logic).
+
+6. Safety & Moderation
+Image Moderation: All uploads must pass through an automated Vision API filter (e.g., Google Vision or OpenAI Moderation).
+
+Text Filtering: Keyword blacklisting and LLM-based sentiment check on submissions.
+
+Rate Limiting: Aggressive IP-based limiting on voting endpoints.

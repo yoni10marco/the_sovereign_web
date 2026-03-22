@@ -1,0 +1,10 @@
+export const CYCLE_DURATION_HOURS = 24;
+export const PULSE_INTERVAL_HOURS = 5;
+export const FREE_LIKES_PER_PULSE = 5;
+export const PRO_LIKES_PER_PULSE = 25;
+export const PRO_MAX_STACKED_PULSES = 2;
+export const ANTI_SNIPE_WINDOW_SECONDS = 60;
+export const ANTI_SNIPE_EXTENSION_SECONDS = 60;
+export const RATE_LIMIT_VOTE_PER_MIN = 30;
+export const RATE_LIMIT_SUBMIT_PER_MIN = 5;
+export const RATE_LIMIT_PULSE_PER_HOUR = 12;
