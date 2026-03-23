@@ -54,12 +54,8 @@ export function NavigationBar({ logo_text, links, _navigate, _currentSlug, _page
       );
     }
 
-    // Fallback: non-functional span
-    return (
-      <span key={i} className="text-sm font-medium opacity-80 hover:opacity-100 cursor-pointer transition-opacity">
-        {label}
-      </span>
-    );
+    // No match — hide the link entirely
+    return null;
   }
 
   return (
