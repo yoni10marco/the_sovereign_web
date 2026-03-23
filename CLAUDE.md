@@ -50,6 +50,10 @@ The AI output is restricted to JSON parameters — no raw JS injection. See `src
 - `POST /api/pulse/claim` — Claim pulse (regenerating likes)
 - `GET /api/debug/status` — Inspect DB state (gated by `NEXT_PUBLIC_DEBUG_PANEL`)
 - `POST /api/debug/end-cycle` — End active cycle immediately (gated by `NEXT_PUBLIC_DEBUG_PANEL`)
+- `POST /api/spaces/purchase` — Create a sovereign space record (stub payment, free in beta). Accepts `{ title, prompt, imageUrls: string[] }`. Returns `{ spaceId }`.
+- `POST /api/spaces/generate` — Generate the site config for a space via Gemini. Accepts `{ spaceId }`. Updates `sovereign_spaces.site_config` and sets status to `active`.
+- `GET /api/spaces/my` — Fetch current user's spaces, auto-expires past-expiry records.
+- `GET /api/spaces/[id]` — Fetch a specific space's data (public, no auth required).
 
 ### Image Uploads
 
@@ -58,6 +62,15 @@ Proposals support up to 5 reference images. The submit page uploads each file to
 When a proposal wins, `generateSiteConfig` in `src/lib/morphing/gemini.ts` passes all image URLs to Gemini and also post-processes the output with `injectImagesIntoConfig` to guarantee the images appear in the gallery component regardless of what Gemini generated.
 
 The Gemini system prompt includes color contrast rules (WCAG AA 4.5:1) to ensure readable color combinations, unless the user's prompt explicitly requests specific colors.
+
+### Sovereign Spaces
+
+Users can create a personal space — a privately-owned morphed site live for 24 hours. No community voting; the owner submits a prompt and the AI generates the full config immediately.
+
+- **DB table**: `sovereign_spaces` — fields: `id`, `user_id`, `slug`, `title`, `prompt`, `image_urls` (text[]), `site_config` (jsonb), `status` (`pending`/`generating`/`active`/`expired`), `purchased_at`, `expires_at`, `is_active`.
+- **Pages**: `/spaces` (dashboard), `/spaces/create` (form), `/spaces/[id]` (renders the space via `MorphRenderer` with a fixed sub-header banner).
+- **Payment**: stubbed via Polar (`sovereign_space` product, $9.99). Space is created directly without real payment until Polar is wired up.
+- **Generation**: same `generateSiteConfig` used by the morph cycle. Config is tagged with `id: "space-<uuid>"`.
 
 ### Debug Panel
 
