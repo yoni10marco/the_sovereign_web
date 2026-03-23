@@ -39,6 +39,7 @@ export default function SubmitPage() {
 
     try {
       // Get active cycle
+      console.log("[submit] fetching active cycle...");
       const { data: cycle } = await supabase
         .from("morph_cycles")
         .select("id")
@@ -52,6 +53,8 @@ export default function SubmitPage() {
         setLoading(false);
         return;
       }
+
+      console.log("[submit] active cycle:", cycle?.id);
 
       // Check if user already submitted
       const { data: existing } = await supabase
@@ -90,7 +93,7 @@ export default function SubmitPage() {
         imageUrl = urlData.publicUrl;
       }
 
-      // Insert proposal
+      console.log("[submit] inserting proposal...");
       const { error: insertError } = await supabase.from("proposals").insert({
         cycle_id: cycle.id,
         user_id: user.id,
@@ -99,6 +102,7 @@ export default function SubmitPage() {
         image_url: imageUrl,
       });
 
+      console.log("[submit] insert result:", insertError ? insertError.message : "success");
       if (insertError) {
         setError(insertError.message);
         setLoading(false);
@@ -106,6 +110,7 @@ export default function SubmitPage() {
       }
 
       // Show interstitial ad after submission
+      setLoading(false);
       setShowAd(true);
       setTimeout(() => {
         router.push("/leaderboard");
