@@ -47,7 +47,7 @@ Rules:
 - Always include "navigation" as the first component and "footer" as the last
 - Choose a creative and cohesive color theme that matches the user's prompt
 - Use varied component types - don't repeat the same type more than twice
-- For gallery images, use placeholder URLs like "https://placehold.co/600x400"
+- For gallery images, use Unsplash source URLs like "https://images.unsplash.com/photo-{id}?w=600&h=400&fit=crop" — pick real Unsplash photo IDs that match the theme, or use "https://source.unsplash.com/600x400/?keyword" with a relevant keyword
 - For internal links, use paths like /leaderboard, /submit, /hall-of-fame, /shop
 - Be creative with the content! Match the vibe and theme of the user's prompt
 - Do NOT include any image URLs in hero or article components (background_image, image fields) - leave them out
