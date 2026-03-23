@@ -28,9 +28,15 @@ The Sovereign Web is a generative social platform where the website morphs every
 
 The homepage is a **stateless shell** that renders from a `SiteConfig` object (defined in `src/lib/morphing/config-schema.ts`). A `SiteConfig` contains a `ThemeConfig` (colors, fonts, border-radius) and an ordered array of `ComponentConfig` entries.
 
-Each `ComponentConfig` has a `type` string (e.g. `"hero"`, `"bento_grid"`, `"ticker"`) mapped to a React component via `COMPONENT_REGISTRY` in `src/components/morphing/registry.ts`. There are 15 atomic components in `src/components/morphing/components/`. `MorphRenderer` iterates the config, loads Google Fonts dynamically, and renders them.
+Each `ComponentConfig` has a `type` string (e.g. `"hero"`, `"bento_grid"`, `"ticker"`) mapped to a React component via `COMPONENT_REGISTRY` in `src/components/morphing/registry.ts`. There are 33 atomic components in `src/components/morphing/components/`. `MorphRenderer` iterates the config, loads Google Fonts dynamically, and renders them.
 
 The AI output is restricted to JSON parameters — no raw JS injection. See `src/lib/morphing/sanitizer.ts`.
+
+**Multi-page support**: `SiteConfig` has an optional `pages?: PageConfig[]` array. Gemini generates 2-3 sub-pages by default. `MorphRenderer` holds `currentSlug` state and renders the active page's components. `_navigate`, `_currentSlug`, and `_pages` are injected into all `navigation` and `footer` components at render time. Sub-page nav buttons are sourced directly from `_pages` (not Gemini link urls) to guarantee reliability.
+
+**Navigation styles**: `NavigationProps.nav_style` supports `"default"` | `"centered"` | `"pill"` | `"minimal"` | `"bold"` | `"sidebar"`. Gemini picks based on site vibe. Back button always shown on sub-pages.
+
+**Background patterns**: `ThemeConfig.background_pattern` supports `"dots"` | `"grid"` | `"diagonal"` | `"gradient"` | `"crosshatch"` | `"noise"`. Rendered as CSS overlay in `MorphRenderer`.
 
 ### Supabase Clients
 
