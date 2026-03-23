@@ -39,6 +39,8 @@ export default function SubmitPage() {
 
     try {
       // Get active cycle
+      console.log("[submit] supabase URL:", process.env.NEXT_PUBLIC_SUPABASE_URL);
+      console.log("[submit] has anon key:", !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
       console.log("[submit] fetching active cycle...");
       const { data: cycle, error: cycleError } = await supabase
         .from("morph_cycles")
