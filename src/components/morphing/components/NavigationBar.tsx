@@ -6,13 +6,18 @@ interface NavigationBarProps extends NavigationProps {
   _pages?: PageConfig[];
 }
 
+// Same normalization as sanitizer — strip leading slash + replace non-slug chars + lowercase
+function normalizeSlug(url: string): string {
+  return url.replace(/^\//, "").replace(/[^a-z0-9-]/gi, "-").toLowerCase();
+}
+
 export function NavigationBar({ logo_text, links, _navigate, _currentSlug, _pages = [] }: NavigationBarProps) {
   const pagesSlugs = new Set(_pages.map((p) => p.slug));
 
   function renderLink(link: { label: string; url: string }, i: number) {
     const { label, url } = link;
-    // Normalize: strip leading slash so "/about" matches slug "about"
-    const slug = url.replace(/^\//, "");
+    // Normalize the url the same way the sanitizer normalizes page slugs
+    const slug = normalizeSlug(url);
 
     // Internal page navigation
     if (_navigate && pagesSlugs.has(slug)) {

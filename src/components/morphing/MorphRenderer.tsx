@@ -52,10 +52,14 @@ export function MorphRenderer({ config }: MorphRendererProps) {
     document.head.appendChild(link);
   }, [theme.font_heading, theme.font_body]);
 
+  // Normalize slug the same way the sanitizer does, so lookup always matches
+  const normalizeSlug = (s: string) => s.replace(/[^a-z0-9-]/gi, "-").toLowerCase();
+
   // Determine which page's components to render
   const activePage = currentSlug
-    ? config.pages?.find((p) => p.slug === currentSlug)
+    ? config.pages?.find((p) => p.slug === normalizeSlug(currentSlug))
     : null;
+  // If slug was set but no page found, fall back to homepage (don't show a ghost page)
   const componentsToRender = activePage ? activePage.components : config.components;
 
   const sorted = [...componentsToRender].sort((a, b) => a.order - b.order);
@@ -91,7 +95,11 @@ export function MorphRenderer({ config }: MorphRendererProps) {
         // Inject navigation helpers into nav/footer components
         const extraProps =
           comp.type === "navigation" || comp.type === "footer"
-            ? { _navigate: setCurrentSlug, _currentSlug: currentSlug, _pages: pages }
+            ? {
+                _navigate: (slug: string | null) => setCurrentSlug(slug ? normalizeSlug(slug) : null),
+                _currentSlug: currentSlug,
+                _pages: pages,
+              }
             : {};
         return <Component key={comp.id} {...comp.props} {...extraProps} />;
       })}
