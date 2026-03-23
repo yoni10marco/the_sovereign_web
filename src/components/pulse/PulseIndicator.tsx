@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/components/auth/AuthProvider";
 import dayjs from "dayjs";
 
@@ -14,18 +13,11 @@ export function PulseIndicator() {
 
   const fetchPulses = async () => {
     if (!user) return;
-    const supabase = createClient();
-    const { data } = await supabase
-      .from("pulses")
-      .select("*")
-      .eq("user_id", user.id)
-      .gt("expires_at", new Date().toISOString())
-      .gt("likes_remaining", 0)
-      .order("expires_at", { ascending: true });
-
-    const pulses = data ?? [];
-    setTotalLikes(pulses.reduce((s: number, p: { likes_remaining: number }) => s + p.likes_remaining, 0));
-    setNextExpiry(pulses[0]?.expires_at ?? null);
+    const res = await fetch("/api/pulse");
+    if (!res.ok) return;
+    const data = await res.json();
+    setTotalLikes(data.totalLikes ?? 0);
+    setNextExpiry(data.nextExpiry ?? null);
   };
 
   useEffect(() => {

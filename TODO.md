@@ -2,11 +2,7 @@
 
 ## Critical — Must Fix
 
-- [ ] **Browser RLS queries hang** — The browser Supabase client (anon key) cannot query tables even with "public read" RLS policies. Queries hang instead of returning errors. Affected components that likely need server API routes:
-  - `PulseIndicator` — fetches pulses directly from browser
-  - `VoteButton` / voting flow — casts votes from browser
-  - ~~`Leaderboard page`~~ — fixed, now uses admin client server-side
-  - `ClaimPulseButton` — claims pulse from browser
+- [x] **Browser RLS queries hang** — Fixed. `PulseIndicator` now fetches via `GET /api/pulse` (admin client server-side). `VoteButton` and `ClaimPulseButton` were already routing through API endpoints.
 
 ## Features — Not Yet Implemented
 

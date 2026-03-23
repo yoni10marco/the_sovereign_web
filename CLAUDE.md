@@ -46,6 +46,7 @@ The AI output is restricted to JSON parameters — no raw JS injection. See `src
 - `POST /api/submit` — Submit a proposal (auth via cookies, DB via admin client). Accepts `{ title, prompt, imageUrls: string[] }`.
 - `POST /api/upload-image` — Uploads a single image to Supabase Storage (`proposal-images` bucket, public). Returns `{ url }`. Auth required.
 - `POST /api/vote` — Cast votes on proposals
+- `GET /api/pulse` — Fetch active pulse data for the current user (totalLikes, nextExpiry). Uses admin client server-side.
 - `POST /api/pulse/claim` — Claim pulse (regenerating likes)
 - `GET /api/debug/status` — Inspect DB state (gated by `NEXT_PUBLIC_DEBUG_PANEL`)
 - `POST /api/debug/end-cycle` — End active cycle immediately (gated by `NEXT_PUBLIC_DEBUG_PANEL`)
