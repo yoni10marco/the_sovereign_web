@@ -24,7 +24,7 @@ export function LiveVoteCount({ proposalId, initialCount }: LiveVoteCountProps) 
           table: "proposals",
           filter: `id=eq.${proposalId}`,
         },
-        (payload) => {
+        (payload: { new: { vote_count: number } }) => {
           setCount(payload.new.vote_count);
         }
       )
