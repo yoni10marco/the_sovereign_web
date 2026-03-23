@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/components/auth/AuthProvider";
 import { Header } from "@/components/layout/Header";
+import { DebugPanel } from "@/components/debug/DebugPanel";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -25,6 +26,7 @@ export default function RootLayout({
         <AuthProvider>
           <Header />
           <main>{children}</main>
+          <DebugPanel />
         </AuthProvider>
       </body>
     </html>
