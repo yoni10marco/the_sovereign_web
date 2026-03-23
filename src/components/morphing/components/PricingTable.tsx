@@ -2,12 +2,12 @@ import type { PricingProps } from "@/lib/morphing/config-schema";
 
 export function PricingTable({ plans }: PricingProps) {
   return (
-    <section className="px-8 py-16">
-      <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+    <section className="px-4 sm:px-8 py-12 sm:py-16">
+      <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 max-w-5xl mx-auto">
         {plans?.map((plan, i) => (
           <div
             key={i}
-            className={`p-8 border ${plan.highlighted ? "border-2" : "border-current/10"} flex flex-col`}
+            className={`p-6 sm:p-8 border ${plan.highlighted ? "border-2" : "border-current/10"} flex flex-col`}
             style={{
               borderRadius: "var(--morph-radius)",
               borderColor: plan.highlighted ? "var(--morph-accent)" : undefined,

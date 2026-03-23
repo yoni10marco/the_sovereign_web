@@ -2,14 +2,14 @@ import type { ArticleProps } from "@/lib/morphing/config-schema";
 
 export function ArticleBlock({ title, body, image }: ArticleProps) {
   return (
-    <article className="max-w-3xl mx-auto px-8 py-16">
+    <article className="max-w-3xl mx-auto px-4 sm:px-8 py-12 sm:py-16">
       {image && (
-        <img src={image} alt={title} className="w-full h-64 object-cover rounded-lg mb-8" />
+        <img src={image} alt={title} className="w-full h-44 sm:h-56 md:h-64 object-cover rounded-lg mb-6 sm:mb-8" />
       )}
-      <h2 className="text-3xl font-bold" style={{ color: "var(--morph-primary)" }}>
+      <h2 className="text-2xl sm:text-3xl font-bold" style={{ color: "var(--morph-primary)" }}>
         {title}
       </h2>
-      <div className="mt-6 text-lg leading-relaxed opacity-85 whitespace-pre-line">
+      <div className="mt-6 text-base sm:text-lg leading-relaxed opacity-85 whitespace-pre-line">
         {body}
       </div>
     </article>

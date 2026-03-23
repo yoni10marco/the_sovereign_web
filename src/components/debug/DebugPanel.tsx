@@ -40,7 +40,7 @@ export function DebugPanel() {
   return (
     <div className="fixed bottom-4 right-4 z-[100] flex flex-col gap-2 items-end">
       {result && (
-        <div className="bg-gray-900 border border-white/10 rounded-lg p-3 max-w-sm text-xs text-white/70 whitespace-pre-wrap">
+        <div className="bg-gray-900 border border-white/10 rounded-lg p-3 w-[90vw] sm:max-w-sm text-xs text-white/70 whitespace-pre-wrap overflow-auto max-h-48">
           {result}
           <button onClick={() => setResult(null)} className="block mt-2 text-red-400 text-xs">
             dismiss

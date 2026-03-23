@@ -181,7 +181,7 @@ export default function SubmitPage() {
             Reference Images <span className="text-white/30">({images.length}/5)</span>
           </label>
           {previews.length > 0 && (
-            <div className="grid grid-cols-3 gap-3 mb-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-3">
               {previews.map((src, i) => (
                 <div key={i} className="relative">
                   <img src={src} alt={`Preview ${i + 1}`} className="w-full h-24 object-cover rounded-lg" />

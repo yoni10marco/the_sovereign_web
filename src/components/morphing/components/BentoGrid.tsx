@@ -2,12 +2,12 @@ import type { BentoGridProps } from "@/lib/morphing/config-schema";
 
 export function BentoGrid({ items }: BentoGridProps) {
   return (
-    <section className="px-8 py-16">
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-6xl mx-auto">
+    <section className="px-4 sm:px-8 py-12 sm:py-16">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 max-w-6xl mx-auto">
         {items?.map((item, i) => (
           <div
             key={i}
-            className="p-6 border border-current/10 hover:border-current/20 transition-colors"
+            className="p-4 sm:p-6 border border-current/10 hover:border-current/20 transition-colors"
             style={{
               borderRadius: "var(--morph-radius)",
               gridColumn: item.span ? `span ${item.span}` : undefined,

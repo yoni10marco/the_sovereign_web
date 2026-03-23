@@ -5,7 +5,7 @@ export function HeroSection({ headline, subheadline, background_image, cta_text,
 
   return (
     <section
-      className={`relative flex flex-col justify-center ${alignClass} min-h-[60vh] px-8 py-20`}
+      className={`relative flex flex-col justify-center ${alignClass} min-h-[60vh] px-4 sm:px-8 py-12 sm:py-20`}
       style={{
         backgroundImage: background_image ? `url(${background_image})` : undefined,
         backgroundSize: "cover",
@@ -14,13 +14,13 @@ export function HeroSection({ headline, subheadline, background_image, cta_text,
     >
       {background_image && <div className="absolute inset-0 bg-black/40" />}
       <div className="relative z-10 max-w-3xl">
-        <h1 className="text-5xl md:text-7xl font-bold leading-tight" style={{ color: "var(--morph-primary)" }}>
+        <h1 className="text-3xl sm:text-5xl md:text-7xl font-bold leading-tight" style={{ color: "var(--morph-primary)" }}>
           {headline}
         </h1>
-        <p className="mt-4 text-xl md:text-2xl opacity-80">{subheadline}</p>
+        <p className="mt-4 text-base sm:text-xl md:text-2xl opacity-80">{subheadline}</p>
         {cta_text && (
           <button
-            className="mt-8 px-8 py-3 font-semibold rounded-lg transition-transform hover:scale-105"
+            className="mt-8 px-6 sm:px-8 py-3 font-semibold rounded-lg transition-transform hover:scale-105"
             style={{
               backgroundColor: "var(--morph-accent)",
               color: "var(--morph-background)",
