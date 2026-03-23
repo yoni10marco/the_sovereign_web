@@ -62,11 +62,16 @@ export async function generateSiteConfig(
 
   if (!apiKey) {
     console.error("GEMINI_API_KEY not set, using fallback config");
-    return fallbackConfig(prompt, cycleNumber);
+    const fb = fallbackConfig(prompt, cycleNumber);
+    if (imageUrl) injectImageIntoConfig(fb, imageUrl);
+    return fb;
   }
 
   try {
-    const userMessage = `Create a website config for cycle #${cycleNumber}. The winning community prompt is: "${prompt}"`;
+    const imageInstruction = imageUrl
+      ? ` The user also uploaded a reference image (${imageUrl}) — include it as the first image in the gallery component.`
+      : "";
+    const userMessage = `Create a website config for cycle #${cycleNumber}. The winning community prompt is: "${prompt}"${imageInstruction}`;
 
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite-preview:generateContent?key=${apiKey}`,
@@ -108,10 +113,42 @@ export async function generateSiteConfig(
       return fallbackConfig(prompt, cycleNumber);
     }
 
+    // Inject the uploaded image into the gallery component if provided
+    if (imageUrl) {
+      injectImageIntoConfig(sanitized, imageUrl);
+    }
+
     return sanitized;
   } catch (err) {
     console.error("Gemini generation failed:", err);
-    return fallbackConfig(prompt, cycleNumber);
+    const fb = fallbackConfig(prompt, cycleNumber);
+    if (imageUrl) injectImageIntoConfig(fb, imageUrl);
+    return fb;
+  }
+}
+
+function injectImageIntoConfig(config: SiteConfig, imageUrl: string): void {
+  const gallery = config.components.find((c) => c.type === "gallery");
+  if (gallery && Array.isArray((gallery.props as { images?: unknown[] }).images)) {
+    const images = (gallery.props as { images: { src: string; alt: string }[] }).images;
+    // Only inject if not already present
+    if (!images.some((img) => img.src === imageUrl)) {
+      images.unshift({ src: imageUrl, alt: "Community reference image" });
+    }
+  } else {
+    // No gallery — insert one after the hero (or at position 1)
+    const insertAt = Math.min(1, config.components.length);
+    config.components.splice(insertAt, 0, {
+      type: "gallery",
+      id: "gallery-user-image",
+      order: insertAt,
+      props: {
+        images: [{ src: imageUrl, alt: "Community reference image" }],
+        columns: 1,
+      },
+    });
+    // Fix order values
+    config.components.forEach((c, i) => { c.order = i; });
   }
 }
 
