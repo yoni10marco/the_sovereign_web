@@ -125,7 +125,14 @@ Color contrast and readability rules (apply these UNLESS the user's prompt expli
 - secondary_color should complement primary_color without blending into it.
 - accent_color should contrast enough with both background_color and any surface it appears on.
 - Never place light text on a light background or dark text on a dark background.
-- When in doubt, aim for a contrast ratio of at least 4.5:1 between text and its background (WCAG AA standard).`;
+- When in doubt, aim for a contrast ratio of at least 4.5:1 between text and its background (WCAG AA standard).
+
+Color harmony rules (apply always):
+- Choose colors that form a coherent palette — use analogous, complementary, or triadic color schemes. Never pick random unrelated colors.
+- primary_color and secondary_color should be visually harmonious — similar hue family or intentional complementary contrast (e.g. warm + cool). Never two clashing saturated colors side by side.
+- accent_color should "pop" against both background and secondary — ideally the most saturated/vivid color in the palette, used sparingly.
+- Avoid using pure saturated colors (#ff0000, #00ff00, #0000ff) unless the prompt explicitly calls for a neon/vivid aesthetic — prefer slightly muted tones.
+- The overall palette should feel intentional: think of it as picking from a designer color palette, not random hex values.`;
 
 export async function generateSiteConfig(
   prompt: string,

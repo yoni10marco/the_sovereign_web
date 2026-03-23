@@ -6,75 +6,10 @@ interface NavigationBarProps extends NavigationProps {
   _pages?: PageConfig[];
 }
 
-// Same normalization as sanitizer — strip leading slash + replace non-slug chars + lowercase
-function normalizeSlug(url: string): string {
-  return url.replace(/^\//, "").replace(/[^a-z0-9-]/gi, "-").toLowerCase();
-}
 
 export function NavigationBar({ logo_text, links, _navigate, _currentSlug, _pages = [] }: NavigationBarProps) {
-  // Try to find the best-matching page slug for a given url
-  function resolvePageSlug(url: string): string | null {
-    if (!_navigate || _pages.length === 0) return null;
-    const normalized = normalizeSlug(url);
-    // 1. Exact match
-    const exact = _pages.find((p) => p.slug === normalized);
-    if (exact) return exact.slug;
-    // 2. Fuzzy match: nav url is prefix/suffix of a page slug or vice versa
-    const fuzzy = _pages.find(
-      (p) => p.slug.startsWith(normalized) || normalized.startsWith(p.slug) || p.slug.includes(normalized) || normalized.includes(p.slug)
-    );
-    return fuzzy?.slug ?? null;
-  }
-
-  function renderLink(link: { label: string; url: string }, i: number) {
-    const { label, url } = link;
-
-    // External link — check before slug resolution
-    if (url.startsWith("http")) {
-      return (
-        <a
-          key={i}
-          href={url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-sm font-medium opacity-80 hover:opacity-100 transition-opacity"
-        >
-          {label}
-        </a>
-      );
-    }
-
-    // Anchor scroll
-    if (url.startsWith("#")) {
-      return (
-        <a
-          key={i}
-          href={url}
-          className="text-sm font-medium opacity-80 hover:opacity-100 transition-opacity"
-        >
-          {label}
-        </a>
-      );
-    }
-
-    // Internal page navigation — exact or fuzzy slug match
-    const pageSlug = resolvePageSlug(url);
-    if (pageSlug) {
-      return (
-        <button
-          key={i}
-          onClick={() => _navigate!(pageSlug)}
-          className="text-sm font-medium opacity-80 hover:opacity-100 cursor-pointer transition-opacity"
-          style={{ color: _currentSlug === pageSlug ? "var(--morph-accent)" : undefined }}
-        >
-          {label}
-        </button>
-      );
-    }
-
-    // No match — hide
-    return null;
-  }
+  // External / anchor links from Gemini (sub-page slugs are handled via _pages directly)
+  const externalLinks = (links ?? []).filter(({ url }) => url.startsWith("http") || url.startsWith("#"));
 
   return (
     <nav className="flex items-center justify-between px-6 py-4">
@@ -85,7 +20,8 @@ export function NavigationBar({ logo_text, links, _navigate, _currentSlug, _page
       >
         {logo_text}
       </button>
-      <div className="flex gap-6 items-center">
+      <div className="flex gap-6 items-center flex-wrap">
+        {/* Back to homepage button when on a sub-page */}
         {_currentSlug && _navigate && (
           <button
             onClick={() => _navigate(null)}
@@ -94,7 +30,35 @@ export function NavigationBar({ logo_text, links, _navigate, _currentSlug, _page
             ← Home
           </button>
         )}
-        {links?.map((link, i) => renderLink(link, i))}
+        {/* Sub-page buttons — sourced directly from _pages, never from Gemini link urls */}
+        {_pages.map((page) => (
+          <button
+            key={page.slug}
+            onClick={() => _navigate?.(page.slug)}
+            className="text-sm font-medium opacity-80 hover:opacity-100 cursor-pointer transition-opacity"
+            style={{ color: _currentSlug === page.slug ? "var(--morph-accent)" : undefined }}
+          >
+            {page.title}
+          </button>
+        ))}
+        {/* External / anchor links from Gemini */}
+        {externalLinks.map(({ label, url }, i) =>
+          url.startsWith("http") ? (
+            <a
+              key={i}
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm font-medium opacity-80 hover:opacity-100 transition-opacity"
+            >
+              {label}
+            </a>
+          ) : (
+            <a key={i} href={url} className="text-sm font-medium opacity-80 hover:opacity-100 transition-opacity">
+              {label}
+            </a>
+          )
+        )}
       </div>
     </nav>
   );
