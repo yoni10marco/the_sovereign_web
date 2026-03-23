@@ -51,7 +51,15 @@ Rules:
 - For internal links, use paths like /leaderboard, /submit, /hall-of-fame, /shop
 - Be creative with the content! Match the vibe and theme of the user's prompt
 - Do NOT include any image URLs in hero or article components (background_image, image fields) - leave them out
-- Use emojis as icons in features components`;
+- Use emojis as icons in features components
+
+Color contrast and readability rules (apply these UNLESS the user's prompt explicitly requests specific colors or a style that intentionally breaks them):
+- text_color must always be highly readable against background_color. If background_color is dark, use a light text_color, and vice versa. Never use a text color that is close to the background color.
+- primary_color is used for buttons, headings, and highlights — make sure it stands out clearly against background_color.
+- secondary_color should complement primary_color without blending into it.
+- accent_color should contrast enough with both background_color and any surface it appears on.
+- Never place light text on a light background or dark text on a dark background.
+- When in doubt, aim for a contrast ratio of at least 4.5:1 between text and its background (WCAG AA standard).`;
 
 export async function generateSiteConfig(
   prompt: string,
