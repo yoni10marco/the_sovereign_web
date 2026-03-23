@@ -71,7 +71,7 @@ export default async function SpacePage({ params }: Props) {
   return (
     <div>
       {/* Space banner */}
-      <div className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-2 bg-black/80 backdrop-blur border-b border-white/10 text-sm">
+      <div className="fixed top-16 left-0 right-0 z-40 flex items-center justify-between px-4 py-2 bg-black/80 backdrop-blur border-b border-white/10 text-sm">
         <div className="flex items-center gap-2">
           <span>🏰</span>
           <span className="font-semibold text-amber-400">{space.title}</span>
@@ -86,7 +86,7 @@ export default async function SpacePage({ params }: Props) {
         </Link>
       </div>
       {/* Offset content below banner */}
-      <div className="pt-10">
+      <div className="pt-9">
         <MorphRenderer config={config} />
       </div>
     </div>
