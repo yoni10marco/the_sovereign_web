@@ -11,6 +11,7 @@ const NAV_LINKS = [
   { href: "/submit", label: "Submit" },
   { href: "/hall-of-fame", label: "Hall of Fame" },
   { href: "/shop", label: "Shop" },
+  { href: "/spaces", label: "Spaces" },
 ];
 
 export function Header() {
