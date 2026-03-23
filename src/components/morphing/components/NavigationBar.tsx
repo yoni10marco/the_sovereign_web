@@ -12,28 +12,24 @@ function normalizeSlug(url: string): string {
 }
 
 export function NavigationBar({ logo_text, links, _navigate, _currentSlug, _pages = [] }: NavigationBarProps) {
-  const pagesSlugs = new Set(_pages.map((p) => p.slug));
+  // Try to find the best-matching page slug for a given url
+  function resolvePageSlug(url: string): string | null {
+    if (!_navigate || _pages.length === 0) return null;
+    const normalized = normalizeSlug(url);
+    // 1. Exact match
+    const exact = _pages.find((p) => p.slug === normalized);
+    if (exact) return exact.slug;
+    // 2. Fuzzy match: nav url is prefix/suffix of a page slug or vice versa
+    const fuzzy = _pages.find(
+      (p) => p.slug.startsWith(normalized) || normalized.startsWith(p.slug) || p.slug.includes(normalized) || normalized.includes(p.slug)
+    );
+    return fuzzy?.slug ?? null;
+  }
 
   function renderLink(link: { label: string; url: string }, i: number) {
     const { label, url } = link;
-    // Normalize the url the same way the sanitizer normalizes page slugs
-    const slug = normalizeSlug(url);
 
-    // Internal page navigation
-    if (_navigate && pagesSlugs.has(slug)) {
-      return (
-        <button
-          key={i}
-          onClick={() => _navigate(slug)}
-          className="text-sm font-medium opacity-80 hover:opacity-100 cursor-pointer transition-opacity"
-          style={{ color: _currentSlug === slug ? "var(--morph-accent)" : undefined }}
-        >
-          {label}
-        </button>
-      );
-    }
-
-    // External link
+    // External link — check before slug resolution
     if (url.startsWith("http")) {
       return (
         <a
@@ -61,7 +57,22 @@ export function NavigationBar({ logo_text, links, _navigate, _currentSlug, _page
       );
     }
 
-    // No match — hide the link entirely
+    // Internal page navigation — exact or fuzzy slug match
+    const pageSlug = resolvePageSlug(url);
+    if (pageSlug) {
+      return (
+        <button
+          key={i}
+          onClick={() => _navigate!(pageSlug)}
+          className="text-sm font-medium opacity-80 hover:opacity-100 cursor-pointer transition-opacity"
+          style={{ color: _currentSlug === pageSlug ? "var(--morph-accent)" : undefined }}
+        >
+          {label}
+        </button>
+      );
+    }
+
+    // No match — hide
     return null;
   }
 

@@ -108,7 +108,7 @@ Rules:
 - Use emojis as icons in features components
 - When using video_embed, provide real-looking YouTube URLs with plausible video IDs
 - Navigation links MUST use one of these url formats: a sub-page slug (must exist in the pages array), "https://..." (external), or "#anchor". Never invent a url that doesn't match one of these — if a nav link would point to a page that doesn't exist yet, either create that sub-page in the pages array or omit the link entirely.
-- When using pages, navigation links to sub-pages use the slug as the url value (no leading slash)
+- CRITICAL: the url value in a nav link for a sub-page MUST be the EXACT same string as that page's slug field. Copy-paste the slug value — do not paraphrase it.
 - Only add pages when the prompt clearly benefits from multi-page structure; most prompts don't need sub-pages
 - When using pages, each sub-page MUST have different components and content than the homepage — never duplicate the homepage layout. Sub-pages should focus on their specific topic (e.g. an "About" page has bio/team/story content, not another hero section identical to the homepage).
 
