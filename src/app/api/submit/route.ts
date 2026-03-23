@@ -12,11 +12,13 @@ export async function POST(request: Request) {
   }
 
   const body = await request.json();
-  const { title, prompt, imageUrl } = body;
+  const { title, prompt, imageUrls } = body;
 
   if (!title || !prompt) {
     return NextResponse.json({ error: "Title and prompt are required" }, { status: 400 });
   }
+
+  const urls: string[] = Array.isArray(imageUrls) ? imageUrls.slice(0, 5) : [];
 
   const admin = createAdminClient();
 
@@ -51,7 +53,8 @@ export async function POST(request: Request) {
     user_id: user.id,
     title,
     prompt,
-    image_url: imageUrl ?? null,
+    image_url: urls[0] ?? null,
+    image_urls: urls,
   });
 
   if (insertError) {

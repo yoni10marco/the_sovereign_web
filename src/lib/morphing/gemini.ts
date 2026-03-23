@@ -63,7 +63,7 @@ Color contrast and readability rules (apply these UNLESS the user's prompt expli
 
 export async function generateSiteConfig(
   prompt: string,
-  imageUrl: string | null,
+  imageUrls: string[],
   cycleNumber: number
 ): Promise<SiteConfig> {
   const apiKey = process.env.GEMINI_API_KEY;
@@ -71,13 +71,13 @@ export async function generateSiteConfig(
   if (!apiKey) {
     console.error("GEMINI_API_KEY not set, using fallback config");
     const fb = fallbackConfig(prompt, cycleNumber);
-    if (imageUrl) injectImageIntoConfig(fb, imageUrl);
+    if (imageUrls.length) injectImagesIntoConfig(fb, imageUrls);
     return fb;
   }
 
   try {
-    const imageInstruction = imageUrl
-      ? ` The user also uploaded a reference image (${imageUrl}) — include it as the first image in the gallery component.`
+    const imageInstruction = imageUrls.length
+      ? ` The user uploaded ${imageUrls.length} reference image(s): ${imageUrls.join(", ")} — include them in the gallery component.`
       : "";
     const userMessage = `Create a website config for cycle #${cycleNumber}. The winning community prompt is: "${prompt}"${imageInstruction}`;
 
@@ -121,41 +121,39 @@ export async function generateSiteConfig(
       return fallbackConfig(prompt, cycleNumber);
     }
 
-    // Inject the uploaded image into the gallery component if provided
-    if (imageUrl) {
-      injectImageIntoConfig(sanitized, imageUrl);
+    // Inject the uploaded images into the gallery component if provided
+    if (imageUrls.length) {
+      injectImagesIntoConfig(sanitized, imageUrls);
     }
 
     return sanitized;
   } catch (err) {
     console.error("Gemini generation failed:", err);
     const fb = fallbackConfig(prompt, cycleNumber);
-    if (imageUrl) injectImageIntoConfig(fb, imageUrl);
+    if (imageUrls.length) injectImagesIntoConfig(fb, imageUrls);
     return fb;
   }
 }
 
-function injectImageIntoConfig(config: SiteConfig, imageUrl: string): void {
+function injectImagesIntoConfig(config: SiteConfig, imageUrls: string[]): void {
+  const newEntries = imageUrls.map((src, i) => ({ src, alt: `Community reference image ${i + 1}` }));
   const gallery = config.components.find((c) => c.type === "gallery");
   if (gallery && Array.isArray((gallery.props as { images?: unknown[] }).images)) {
     const images = (gallery.props as { images: { src: string; alt: string }[] }).images;
-    // Only inject if not already present
-    if (!images.some((img) => img.src === imageUrl)) {
-      images.unshift({ src: imageUrl, alt: "Community reference image" });
-    }
+    const toAdd = newEntries.filter((e) => !images.some((img) => img.src === e.src));
+    images.unshift(...toAdd);
   } else {
-    // No gallery — insert one after the hero (or at position 1)
+    // No gallery — insert one after the hero
     const insertAt = Math.min(1, config.components.length);
     config.components.splice(insertAt, 0, {
       type: "gallery",
-      id: "gallery-user-image",
+      id: "gallery-user-images",
       order: insertAt,
       props: {
-        images: [{ src: imageUrl, alt: "Community reference image" }],
-        columns: 1,
+        images: newEntries,
+        columns: Math.min(newEntries.length, 3),
       },
     });
-    // Fix order values
     config.components.forEach((c, i) => { c.order = i; });
   }
 }

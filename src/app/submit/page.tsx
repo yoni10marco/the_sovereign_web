@@ -10,8 +10,8 @@ export default function SubmitPage() {
   const router = useRouter();
   const [title, setTitle] = useState("");
   const [prompt, setPrompt] = useState("");
-  const [image, setImage] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string | null>(null);
+  const [images, setImages] = useState<File[]>([]);
+  const [previews, setPreviews] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showAd, setShowAd] = useState(false);
@@ -58,15 +58,22 @@ export default function SubmitPage() {
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        setError("Image must be under 5MB");
-        return;
-      }
-      setImage(file);
-      setPreview(URL.createObjectURL(file));
+    const files = Array.from(e.target.files ?? []);
+    const remaining = 5 - images.length;
+    const toAdd = files.slice(0, remaining);
+    const oversized = toAdd.find((f) => f.size > 5 * 1024 * 1024);
+    if (oversized) {
+      setError("Each image must be under 5MB");
+      return;
     }
+    setImages((prev) => [...prev, ...toAdd]);
+    setPreviews((prev) => [...prev, ...toAdd.map((f) => URL.createObjectURL(f))]);
+    e.target.value = "";
+  };
+
+  const removeImage = (index: number) => {
+    setImages((prev) => prev.filter((_, i) => i !== index));
+    setPreviews((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -76,10 +83,10 @@ export default function SubmitPage() {
     setError("");
 
     try {
-      let imageUrl: string | null = null;
-      if (image) {
+      const imageUrls: string[] = [];
+      for (const file of images) {
         const fd = new FormData();
-        fd.append("file", image);
+        fd.append("file", file);
         const uploadRes = await fetch("/api/upload-image", { method: "POST", body: fd });
         const uploadData = await uploadRes.json();
         if (!uploadRes.ok) {
@@ -87,13 +94,13 @@ export default function SubmitPage() {
           setLoading(false);
           return;
         }
-        imageUrl = uploadData.url;
+        imageUrls.push(uploadData.url);
       }
 
       const res = await fetch("/api/submit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, prompt, imageUrl }),
+        body: JSON.stringify({ title, prompt, imageUrls }),
       });
 
       const data = await res.json();
@@ -123,7 +130,7 @@ export default function SubmitPage() {
 
       <h1 className="text-3xl font-bold mb-2">Submit Your Vision</h1>
       <p className="text-white/50 mb-8">
-        What should this website become? Upload an image and describe your vision.
+        What should this website become? Upload up to 5 images and describe your vision.
       </p>
 
       <button
@@ -170,31 +177,37 @@ export default function SubmitPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-white/70 mb-2">Reference Image</label>
-          <div className="border-2 border-dashed border-white/10 rounded-lg p-8 text-center hover:border-white/20 transition-colors">
-            {preview ? (
-              <div className="relative">
-                <img src={preview} alt="Preview" className="max-h-48 mx-auto rounded" />
-                <button
-                  type="button"
-                  onClick={() => { setImage(null); setPreview(null); }}
-                  className="absolute top-2 right-2 px-2 py-1 bg-black/50 text-white text-xs rounded"
-                >
-                  Remove
-                </button>
-              </div>
-            ) : (
-              <label className="cursor-pointer">
-                <p className="text-white/40">Click to upload an image (max 5MB)</p>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  className="hidden"
-                />
-              </label>
-            )}
-          </div>
+          <label className="block text-sm font-medium text-white/70 mb-2">
+            Reference Images <span className="text-white/30">({images.length}/5)</span>
+          </label>
+          {previews.length > 0 && (
+            <div className="grid grid-cols-3 gap-3 mb-3">
+              {previews.map((src, i) => (
+                <div key={i} className="relative">
+                  <img src={src} alt={`Preview ${i + 1}`} className="w-full h-24 object-cover rounded-lg" />
+                  <button
+                    type="button"
+                    onClick={() => removeImage(i)}
+                    className="absolute top-1 right-1 w-5 h-5 flex items-center justify-center bg-black/60 text-white text-xs rounded-full"
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+          {images.length < 5 && (
+            <label className="flex items-center justify-center gap-2 w-full py-4 border-2 border-dashed border-white/10 rounded-lg text-white/40 hover:border-white/20 hover:text-white/60 transition-colors cursor-pointer">
+              <span>+ Add image (max 5MB each)</span>
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleImageChange}
+                className="hidden"
+              />
+            </label>
+          )}
         </div>
 
         <button
