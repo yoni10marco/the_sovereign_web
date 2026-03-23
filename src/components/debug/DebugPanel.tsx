@@ -49,6 +49,24 @@ export function DebugPanel() {
       )}
       <div className="flex gap-2">
         <button
+          onClick={async () => {
+            setLoading("status");
+            setResult(null);
+            try {
+              const res = await fetch("/api/debug/status");
+              const data = await res.json();
+              setResult(JSON.stringify(data, null, 2));
+            } catch (e) {
+              setResult(`Error: ${e}`);
+            }
+            setLoading(null);
+          }}
+          disabled={loading !== null}
+          className="px-3 py-2 bg-gray-600 hover:bg-gray-500 disabled:opacity-50 text-white text-xs font-bold rounded-lg shadow-lg"
+        >
+          {loading === "status" ? "..." : "Status"}
+        </button>
+        <button
           onClick={handleEndVote}
           disabled={loading !== null}
           className="px-3 py-2 bg-yellow-600 hover:bg-yellow-500 disabled:opacity-50 text-white text-xs font-bold rounded-lg shadow-lg"
