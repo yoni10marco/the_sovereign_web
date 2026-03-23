@@ -32,7 +32,7 @@ You MUST return ONLY valid JSON (no markdown, no code fences, no explanation) ma
   ]
 }
 
-The "pages" field is REQUIRED. Always generate 2-3 sub-pages. Each sub-page has its own components array. Navigation links reference a sub-page by its exact slug as the url value, e.g. { "label": "About", "url": "about" }. Sub-pages are flat (no sub-sub-pages).
+The "pages" field should almost always be included. Generate 2-3 sub-pages by default unless the prompt explicitly says "single page", "no subpages", "one page", or similar. Each sub-page has its own components array. Navigation links reference a sub-page by its exact slug as the url value, e.g. { "label": "About", "url": "about" }. Sub-pages are flat (no sub-sub-pages).
 
 Available component types and their props:
 
@@ -107,7 +107,7 @@ Rules:
 - Do NOT include any image URLs in hero or article components (background_image, image fields) - leave them out
 - Use emojis as icons in features components
 - When using video_embed, provide real-looking YouTube URLs with plausible video IDs
-- ALWAYS generate 2-3 sub-pages in the "pages" array. Every site must be multi-page. Choose sub-pages that make sense for the theme (e.g. "About", "Gallery", "Contact", "Team", "Blog", "Services", "Portfolio", etc.)
+- Generate 2-3 sub-pages in the "pages" array by default. Choose sub-pages that make sense for the theme (e.g. "About", "Gallery", "Contact", "Team", "Blog", "Services", "Portfolio", etc.). Skip sub-pages ONLY if the prompt explicitly requests a single-page site.
 - ALWAYS add navigation links for every sub-page in the homepage navigation component's "links" array. Use the sub-page slug as the url value.
 - CRITICAL: the url value in a nav link for a sub-page MUST be the EXACT same string as that page's slug field. Copy-paste the slug — do not paraphrase it.
 - Navigation links may also use "https://..." (external) or "#anchor" formats — but never invent a url that doesn't match a real sub-page slug, external link, or anchor.
