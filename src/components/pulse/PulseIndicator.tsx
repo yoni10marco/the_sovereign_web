@@ -24,7 +24,7 @@ export function PulseIndicator() {
       .order("expires_at", { ascending: true });
 
     const pulses = data ?? [];
-    setTotalLikes(pulses.reduce((s, p) => s + p.likes_remaining, 0));
+    setTotalLikes(pulses.reduce((s: number, p: { likes_remaining: number }) => s + p.likes_remaining, 0));
     setNextExpiry(pulses[0]?.expires_at ?? null);
   };
 
