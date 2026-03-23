@@ -18,6 +18,12 @@
 - [ ] **Content moderation** — `src/lib/moderation/stub.ts` always returns `{ safe: true }`. Need to integrate a real moderation API (e.g., OpenAI Moderation, Google Cloud Vision) before launch.
 - [ ] **Sovereign Spaces** — `src/app/spaces/page.tsx` shows "Coming Soon". Full feature: users pay for a personal subdomain with their own morphed site.
 
+## Design & Flexibility
+
+- [ ] **More morphing components** — Add more component types to the registry (e.g., testimonials, pricing table, FAQ accordion, countdown timer, image carousel, stats grid) to give AI more options when generating site configs.
+- [ ] **Website design overhaul** — Evaluate and potentially redesign the overall platform UI/UX (the shell outside the morphed content: nav, auth pages, proposal/vote pages, etc.).
+- [ ] **Verify likes system logic** — Audit the full pulse/likes flow: regeneration timing, allocation amounts (free: 5, pro: 25), expiry, claiming, vote deduction, and edge cases (e.g., what happens to votes if cycle ends early).
+
 ## Nice to Have
 
 - [ ] **Hall of Fame screenshots** — `screenshot_url` column exists but nothing captures screenshots. Could use Puppeteer/Playwright or a screenshot API service.
