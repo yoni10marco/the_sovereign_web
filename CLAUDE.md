@@ -43,11 +43,20 @@ The AI output is restricted to JSON parameters — no raw JS injection. See `src
 ### API Routes
 
 - `POST /api/morph` — Triggers morphing cycle (picks winner, calls Gemini, stores config, creates next cycle)
-- `POST /api/submit` — Submit a proposal (auth via cookies, DB via admin client)
+- `POST /api/submit` — Submit a proposal (auth via cookies, DB via admin client). Accepts `{ title, prompt, imageUrls: string[] }`.
+- `POST /api/upload-image` — Uploads a single image to Supabase Storage (`proposal-images` bucket, public). Returns `{ url }`. Auth required.
 - `POST /api/vote` — Cast votes on proposals
 - `POST /api/pulse/claim` — Claim pulse (regenerating likes)
 - `GET /api/debug/status` — Inspect DB state (gated by `NEXT_PUBLIC_DEBUG_PANEL`)
 - `POST /api/debug/end-cycle` — End active cycle immediately (gated by `NEXT_PUBLIC_DEBUG_PANEL`)
+
+### Image Uploads
+
+Proposals support up to 5 reference images. The submit page uploads each file to `/api/upload-image` (which uses the admin client to write to the `proposal-images` Supabase Storage bucket), collects the public URLs, and sends them as `imageUrls[]` to `/api/submit`. The DB stores them in `proposals.image_urls` (text[]) and `proposals.image_url` (first image, for backwards compat).
+
+When a proposal wins, `generateSiteConfig` in `src/lib/morphing/gemini.ts` passes all image URLs to Gemini and also post-processes the output with `injectImagesIntoConfig` to guarantee the images appear in the gallery component regardless of what Gemini generated.
+
+The Gemini system prompt includes color contrast rules (WCAG AA 4.5:1) to ensure readable color combinations, unless the user's prompt explicitly requests specific colors.
 
 ### Debug Panel
 

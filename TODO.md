@@ -5,12 +5,12 @@
 - [ ] **Browser RLS queries hang** — The browser Supabase client (anon key) cannot query tables even with "public read" RLS policies. Queries hang instead of returning errors. Affected components that likely need server API routes:
   - `PulseIndicator` — fetches pulses directly from browser
   - `VoteButton` / voting flow — casts votes from browser
-  - `Leaderboard page` — fetches proposals from browser
+  - ~~`Leaderboard page`~~ — fixed, now uses admin client server-side
   - `ClaimPulseButton` — claims pulse from browser
 
 ## Features — Not Yet Implemented
 
-- [ ] **Image upload on submit** — Currently disabled (`imageUrl = null`). Need to either fix Supabase Storage RLS or route upload through a server API endpoint.
+- [x] **Image upload on submit** — Fully implemented. Up to 5 images per proposal. Uploads via `/api/upload-image` (admin client, `proposal-images` bucket). Winner images are injected into the generated site gallery.
 - [ ] **Vercel cron job** — `/api/morph` needs a daily trigger at 00:00 UTC. Add a `vercel.json` cron config or use Vercel Cron Jobs.
 - [ ] **Google OAuth** — Login page has the button but OAuth is not configured in the Supabase dashboard. Need to add Google OAuth credentials in Supabase Auth settings.
 - [ ] **Rate limiting** — Currently using an in-memory Map (resets on redeploy). Swap to Upstash Redis for persistent rate limiting when needed at scale.
