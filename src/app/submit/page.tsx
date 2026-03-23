@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { useRouter } from "next/navigation";
 import { AdSlot } from "@/components/layout/AdSlot";
@@ -35,80 +34,24 @@ export default function SubmitPage() {
     setLoading(true);
     setError("");
 
-    const supabase = createClient();
-
     try {
-      // Get active cycle
-      console.log("[submit] supabase URL:", process.env.NEXT_PUBLIC_SUPABASE_URL);
-      console.log("[submit] has anon key:", !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
-      console.log("[submit] fetching active cycle...");
-      const { data: cycle, error: cycleError } = await supabase
-        .from("morph_cycles")
-        .select("id")
-        .eq("status", "active")
-        .order("cycle_number", { ascending: false })
-        .limit(1)
-        .maybeSingle();
-
-      console.log("[submit] cycle result:", cycle, "error:", cycleError);
-
-      if (!cycle) {
-        setError("No active cycle found" + (cycleError ? ": " + cycleError.message : ""));
-        setLoading(false);
-        return;
-      }
-
-      console.log("[submit] active cycle:", cycle?.id);
-
-      // Check if user already submitted
-      const { data: existing } = await supabase
-        .from("proposals")
-        .select("id")
-        .eq("cycle_id", cycle.id)
-        .eq("user_id", user.id)
-        .limit(1);
-
-      if (existing && existing.length > 0) {
-        setError("You've already submitted a proposal this cycle");
-        setLoading(false);
-        return;
-      }
-
-      // Upload image if provided
+      // TODO: Upload image to storage if needed
       let imageUrl: string | null = null;
       if (image) {
-        const ext = image.name.split(".").pop();
-        const path = `${user.id}/${cycle.id}.${ext}`;
-        const { error: uploadError } = await supabase.storage
-          .from("proposal-images")
-          .upload(path, image, { upsert: true });
-
-        if (uploadError) {
-          console.error("Upload error:", uploadError);
-          setError("Failed to upload image: " + uploadError.message);
-          setLoading(false);
-          return;
-        }
-
-        const { data: urlData } = supabase.storage
-          .from("proposal-images")
-          .getPublicUrl(path);
-
-        imageUrl = urlData.publicUrl;
+        // For now skip image upload — will fix storage RLS separately
+        imageUrl = null;
       }
 
-      console.log("[submit] inserting proposal...");
-      const { error: insertError } = await supabase.from("proposals").insert({
-        cycle_id: cycle.id,
-        user_id: user.id,
-        title,
-        prompt,
-        image_url: imageUrl,
+      const res = await fetch("/api/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title, prompt, imageUrl }),
       });
 
-      console.log("[submit] insert result:", insertError ? insertError.message : "success");
-      if (insertError) {
-        setError(insertError.message);
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || "Something went wrong");
         setLoading(false);
         return;
       }
