@@ -77,7 +77,8 @@ export default function SubmitPage() {
           .upload(path, image, { upsert: true });
 
         if (uploadError) {
-          setError("Failed to upload image");
+          console.error("Upload error:", uploadError);
+          setError("Failed to upload image: " + uploadError.message);
           setLoading(false);
           return;
         }
@@ -109,8 +110,9 @@ export default function SubmitPage() {
       setTimeout(() => {
         router.push("/leaderboard");
       }, 2000);
-    } catch {
-      setError("Something went wrong");
+    } catch (err) {
+      console.error("Submit error:", err);
+      setError("Something went wrong: " + String(err));
       setLoading(false);
     }
   };
