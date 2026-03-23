@@ -1,17 +1,121 @@
 import type { SiteConfig } from "./config-schema";
 import { GENESIS_CONFIG } from "./genesis-config";
+import { sanitizeConfig } from "./sanitizer";
 
-// TODO: Replace with actual Gemini API call
-// The real implementation will:
-// 1. Send the prompt + image to Gemini with a system prompt describing available components and the JSON schema
-// 2. Parse the JSON response
-// 3. Run it through sanitizer.ts
+const SYSTEM_PROMPT = `You are a website designer AI. You generate JSON site configurations based on user prompts.
+
+You MUST return ONLY valid JSON (no markdown, no code fences, no explanation) matching this exact schema:
+
+{
+  "id": "cycle-<number>",
+  "cycle_number": <number>,
+  "theme": {
+    "primary_color": "<hex>",
+    "secondary_color": "<hex>",
+    "background_color": "<hex>",
+    "text_color": "<hex>",
+    "accent_color": "<hex>",
+    "font_heading": "<font name>",
+    "font_body": "<font name>",
+    "border_radius": "<css value>"
+  },
+  "components": [
+    { "type": "<component_type>", "id": "<unique_id>", "order": <number>, "props": { ... } }
+  ]
+}
+
+Available component types and their props:
+
+1. "navigation" - { "logo_text": string, "links": [{ "label": string, "url": string }] }
+2. "hero" - { "headline": string, "subheadline": string, "cta_text"?: string, "cta_url"?: string, "alignment": "left"|"center"|"right" }
+3. "bento_grid" - { "items": [{ "title": string, "description": string, "span"?: number }] }
+4. "article" - { "title": string, "body": string }
+5. "gallery" - { "images": [{ "src": string, "alt": string, "caption"?: string }], "columns": number }
+6. "ticker" - { "items": [string], "speed": "slow"|"normal"|"fast" }
+7. "cta_banner" - { "headline": string, "description": string, "button_text": string, "button_url": string }
+8. "testimonials" - { "testimonials": [{ "quote": string, "author": string, "role"?: string }] }
+9. "stats" - { "stats": [{ "value": string, "label": string }] }
+10. "features" - { "features": [{ "title": string, "description": string, "icon"?: string }] }
+11. "faq" - { "items": [{ "question": string, "answer": string }] }
+12. "pricing" - { "plans": [{ "name": string, "price": string, "features": [string], "highlighted"?: boolean }] }
+13. "team" - { "members": [{ "name": string, "role": string, "bio"?: string }] }
+14. "footer" - { "text": string, "links": [{ "label": string, "url": string }] }
+15. "quote" - { "quote": string, "author": string, "source"?: string }
+
+Rules:
+- Use 5-10 components to create a visually interesting page
+- Always include "navigation" as the first component and "footer" as the last
+- Choose a creative and cohesive color theme that matches the user's prompt
+- Use varied component types - don't repeat the same type more than twice
+- For gallery images, use placeholder URLs like "https://placehold.co/600x400"
+- For internal links, use paths like /leaderboard, /submit, /hall-of-fame, /shop
+- Be creative with the content! Match the vibe and theme of the user's prompt
+- Do NOT include any image URLs in hero or article components (background_image, image fields) - leave them out
+- Use emojis as icons in features components`;
+
 export async function generateSiteConfig(
-  _prompt: string,
-  _imageUrl: string | null,
+  prompt: string,
+  imageUrl: string | null,
   cycleNumber: number
 ): Promise<SiteConfig> {
-  // Stub: return a variation of the genesis config with the prompt reflected
+  const apiKey = process.env.GEMINI_API_KEY;
+
+  if (!apiKey) {
+    console.error("GEMINI_API_KEY not set, using fallback config");
+    return fallbackConfig(prompt, cycleNumber);
+  }
+
+  try {
+    const userMessage = `Create a website config for cycle #${cycleNumber}. The winning community prompt is: "${prompt}"`;
+
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite-preview:generateContent?key=${apiKey}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
+          contents: [{ parts: [{ text: userMessage }] }],
+          generationConfig: {
+            temperature: 1.0,
+            responseMimeType: "application/json",
+          },
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      const errText = await response.text();
+      console.error("Gemini API error:", response.status, errText);
+      return fallbackConfig(prompt, cycleNumber);
+    }
+
+    const data = await response.json();
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+    if (!text) {
+      console.error("Gemini returned no text:", JSON.stringify(data));
+      return fallbackConfig(prompt, cycleNumber);
+    }
+
+    const parsed = JSON.parse(text);
+    parsed.id = `cycle-${cycleNumber}`;
+    parsed.cycle_number = cycleNumber;
+
+    const sanitized = sanitizeConfig(parsed);
+    if (!sanitized) {
+      console.error("Gemini output failed sanitization:", text.slice(0, 500));
+      return fallbackConfig(prompt, cycleNumber);
+    }
+
+    return sanitized;
+  } catch (err) {
+    console.error("Gemini generation failed:", err);
+    return fallbackConfig(prompt, cycleNumber);
+  }
+}
+
+function fallbackConfig(prompt: string, cycleNumber: number): SiteConfig {
   return {
     ...GENESIS_CONFIG,
     id: `cycle-${cycleNumber}`,
@@ -23,7 +127,7 @@ export async function generateSiteConfig(
           props: {
             ...c.props,
             headline: `Cycle #${cycleNumber}`,
-            subheadline: `This site was morphed by the community. The winning prompt: "${_prompt}"`,
+            subheadline: `This site was morphed by the community. The winning prompt: "${prompt}"`,
           },
         };
       }
