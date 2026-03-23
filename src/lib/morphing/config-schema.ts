@@ -3,6 +3,13 @@ export interface SiteConfig {
   cycle_number: number;
   theme: ThemeConfig;
   components: ComponentConfig[];
+  pages?: PageConfig[];
+}
+
+export interface PageConfig {
+  slug: string;
+  title: string;
+  components: ComponentConfig[];
 }
 
 export interface ThemeConfig {
@@ -38,7 +45,27 @@ export type ComponentType =
   | "pricing"
   | "team"
   | "footer"
-  | "quote";
+  | "quote"
+  | "video_embed"
+  | "map_embed"
+  | "countdown_timer"
+  | "image_carousel"
+  | "timeline"
+  | "logo_cloud"
+  | "social_links"
+  | "image_text_split"
+  | "callout_box"
+  | "masonry_gallery"
+  | "contact_form"
+  | "embed_block"
+  | "code_block"
+  | "marquee"
+  | "profile_card"
+  | "numbered_steps"
+  | "comparison_table"
+  | "newsletter_signup";
+
+// ---- Existing prop interfaces ----
 
 export interface HeroProps {
   headline: string;
@@ -114,4 +141,123 @@ export interface QuoteProps {
   quote: string;
   author: string;
   source?: string;
+}
+
+// ---- New prop interfaces ----
+
+export interface VideoEmbedProps {
+  url: string;
+  title?: string;
+  aspect?: "16:9" | "4:3";
+}
+
+export interface MapEmbedProps {
+  location: string;
+  height?: number;
+  zoom?: number;
+}
+
+export interface CountdownTimerProps {
+  target_date: string;
+  title?: string;
+  description?: string;
+}
+
+export interface ImageCarouselProps {
+  images: { src: string; alt: string; caption?: string }[];
+  auto_play?: boolean;
+  interval?: number;
+}
+
+export interface TimelineProps {
+  items: { date: string; title: string; description: string; icon?: string }[];
+  orientation?: "vertical" | "horizontal";
+}
+
+export interface LogoCloudProps {
+  title?: string;
+  logos: { src: string; alt: string; url?: string }[];
+  columns?: number;
+}
+
+export interface SocialLinksProps {
+  links: { platform: string; url: string; label?: string }[];
+  size?: "sm" | "md" | "lg";
+  layout?: "row" | "grid";
+}
+
+export interface ImageTextSplitProps {
+  image: string;
+  alt?: string;
+  title: string;
+  body: string;
+  cta_text?: string;
+  cta_url?: string;
+  image_side?: "left" | "right";
+}
+
+export interface CalloutBoxProps {
+  type: "info" | "warning" | "success" | "tip";
+  title?: string;
+  body: string;
+}
+
+export interface MasonryGalleryProps {
+  images: { src: string; alt: string; caption?: string }[];
+  columns?: number;
+}
+
+export interface ContactFormProps {
+  title?: string;
+  description?: string;
+  fields?: ("name" | "email" | "message" | "phone")[];
+  button_text?: string;
+}
+
+export interface EmbedBlockProps {
+  url: string;
+  title?: string;
+  height?: number;
+}
+
+export interface CodeBlockProps {
+  code: string;
+  language?: string;
+  title?: string;
+  show_line_numbers?: boolean;
+}
+
+export interface MarqueeProps {
+  items: string[];
+  speed?: "slow" | "normal" | "fast";
+  direction?: "left" | "right";
+  separator?: string;
+}
+
+export interface ProfileCardProps {
+  name: string;
+  role?: string;
+  bio?: string;
+  image?: string;
+  social_links?: { platform: string; url: string }[];
+}
+
+export interface NumberedStepsProps {
+  title?: string;
+  steps: { title: string; description: string }[];
+  layout?: "vertical" | "horizontal";
+}
+
+export interface ComparisonTableProps {
+  title?: string;
+  columns: string[];
+  rows: { feature: string; values: (string | boolean)[] }[];
+}
+
+export interface NewsletterSignupProps {
+  title?: string;
+  description?: string;
+  placeholder?: string;
+  button_text?: string;
+  disclaimer?: string;
 }

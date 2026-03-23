@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import type { SiteConfig } from "@/lib/morphing/config-schema";
 import { COMPONENT_REGISTRY } from "./registry";
 
@@ -9,7 +9,8 @@ interface MorphRendererProps {
 }
 
 export function MorphRenderer({ config }: MorphRendererProps) {
-  const { theme, components } = config;
+  const { theme } = config;
+  const [currentSlug, setCurrentSlug] = useState<string | null>(null);
 
   // Dynamically load Google Fonts for the theme's fonts
   useEffect(() => {
@@ -32,7 +33,14 @@ export function MorphRenderer({ config }: MorphRendererProps) {
     document.head.appendChild(link);
   }, [theme.font_heading, theme.font_body]);
 
-  const sorted = [...components].sort((a, b) => a.order - b.order);
+  // Determine which page's components to render
+  const activePage = currentSlug
+    ? config.pages?.find((p) => p.slug === currentSlug)
+    : null;
+  const componentsToRender = activePage ? activePage.components : config.components;
+
+  const sorted = [...componentsToRender].sort((a, b) => a.order - b.order);
+  const pages = config.pages ?? [];
 
   return (
     <div
@@ -59,7 +67,12 @@ export function MorphRenderer({ config }: MorphRendererProps) {
       {sorted.map((comp) => {
         const Component = COMPONENT_REGISTRY[comp.type];
         if (!Component) return null;
-        return <Component key={comp.id} {...comp.props} />;
+        // Inject navigation helpers into nav/footer components
+        const extraProps =
+          comp.type === "navigation" || comp.type === "footer"
+            ? { _navigate: setCurrentSlug, _currentSlug: currentSlug, _pages: pages }
+            : {};
+        return <Component key={comp.id} {...comp.props} {...extraProps} />;
       })}
     </div>
   );
