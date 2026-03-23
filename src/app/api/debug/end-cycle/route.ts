@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 
 // Debug-only: ends the active cycle immediately by setting ends_at to now
 export async function POST() {
-  if (process.env.NODE_ENV !== "development") {
+  if (process.env.NEXT_PUBLIC_DEBUG_PANEL !== "true") {
     return NextResponse.json({ error: "Debug only" }, { status: 403 });
   }
 

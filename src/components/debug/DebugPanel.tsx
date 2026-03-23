@@ -6,7 +6,7 @@ export function DebugPanel() {
   const [loading, setLoading] = useState<string | null>(null);
   const [result, setResult] = useState<string | null>(null);
 
-  if (process.env.NODE_ENV !== "development") return null;
+  if (process.env.NEXT_PUBLIC_DEBUG_PANEL !== "true") return null;
 
   async function handleMorph() {
     setLoading("morph");
