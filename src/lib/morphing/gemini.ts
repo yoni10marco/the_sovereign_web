@@ -37,8 +37,10 @@ The "pages" field should almost always be included. Generate 2-3 sub-pages by de
 Available component types and their props:
 
 LAYOUT & NAVIGATION
-1. "navigation" - { "logo_text": string, "links": [{ "label": string, "url": string }] }
+1. "navigation" - { "logo_text": string, "links": [{ "label": string, "url": string }], "nav_style"?: string }
+   - nav_style options: "default" (logo left, links right), "centered" (logo top, links below), "pill" (links as pill capsules), "minimal" (tiny uppercase text), "bold" (full-width colored bar), "sidebar" (vertical fixed left panel)
    - url can be a page slug (for sub-page nav), "#anchor", "https://..." (external), or a site path like /leaderboard
+   - Pick nav_style based on the site vibe: bold/energetic → "bold" or "pill", elegant → "centered" or "minimal", modern dashboard → "sidebar", default for most others
 2. "hero" - { "headline": string, "subheadline": string, "cta_text"?: string, "cta_url"?: string, "alignment": "left"|"center"|"right" }
 3. "footer" - { "text": string, "links": [{ "label": string, "url": string }] }
 

@@ -80,6 +80,7 @@ export interface HeroProps {
 export interface NavigationProps {
   logo_text: string;
   links: { label: string; url: string }[];
+  nav_style?: "default" | "centered" | "pill" | "minimal" | "bold" | "sidebar";
 }
 
 export interface BentoGridProps {
