@@ -76,11 +76,18 @@ export default function SubmitPage() {
     setError("");
 
     try {
-      // TODO: Upload image to storage if needed
       let imageUrl: string | null = null;
       if (image) {
-        // For now skip image upload — will fix storage RLS separately
-        imageUrl = null;
+        const fd = new FormData();
+        fd.append("file", image);
+        const uploadRes = await fetch("/api/upload-image", { method: "POST", body: fd });
+        const uploadData = await uploadRes.json();
+        if (!uploadRes.ok) {
+          setError(uploadData.error || "Image upload failed");
+          setLoading(false);
+          return;
+        }
+        imageUrl = uploadData.url;
       }
 
       const res = await fetch("/api/submit", {
