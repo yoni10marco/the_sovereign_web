@@ -21,6 +21,7 @@ export interface ThemeConfig {
   font_heading: string;
   font_body: string;
   border_radius: string;
+  background_pattern?: "none" | "dots" | "grid" | "diagonal" | "gradient" | "crosshatch" | "noise";
 }
 
 export interface ComponentConfig {

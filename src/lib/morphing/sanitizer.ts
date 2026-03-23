@@ -90,6 +90,9 @@ export function sanitizeConfig(raw: unknown): SiteConfig | null {
       font_heading: String(theme.font_heading || "Inter"),
       font_body: String(theme.font_body || "Inter"),
       border_radius: String(theme.border_radius || "0.5rem"),
+      background_pattern: ["none", "dots", "grid", "diagonal", "gradient", "crosshatch", "noise"].includes(theme.background_pattern as string)
+        ? (theme.background_pattern as "none" | "dots" | "grid" | "diagonal" | "gradient" | "crosshatch" | "noise")
+        : undefined,
     },
     components,
     ...(pages ? { pages } : {}),

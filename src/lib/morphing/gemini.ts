@@ -17,7 +17,8 @@ You MUST return ONLY valid JSON (no markdown, no code fences, no explanation) ma
     "accent_color": "<hex>",
     "font_heading": "<font name>",
     "font_body": "<font name>",
-    "border_radius": "<css value>"
+    "border_radius": "<css value>",
+    "background_pattern": "<pattern>"
   },
   "components": [
     { "type": "<component_type>", "id": "<unique_id>", "order": <number>, "props": { ... } }
@@ -109,6 +110,14 @@ Rules:
 - Navigation links MUST use one of these url formats: a sub-page slug (must exist in the pages array), "https://..." (external), or "#anchor". Never invent a url that doesn't match one of these — if a nav link would point to a page that doesn't exist yet, either create that sub-page in the pages array or omit the link entirely.
 - When using pages, navigation links to sub-pages use the slug as the url value (no leading slash)
 - Only add pages when the prompt clearly benefits from multi-page structure; most prompts don't need sub-pages
+- When using pages, each sub-page MUST have different components and content than the homepage — never duplicate the homepage layout. Sub-pages should focus on their specific topic (e.g. an "About" page has bio/team/story content, not another hero section identical to the homepage).
+
+Background pattern rules:
+- "background_pattern" is OPTIONAL but STRONGLY ENCOURAGED — always set it to make the site feel unique
+- Values: "none" | "dots" | "grid" | "diagonal" | "gradient" | "crosshatch" | "noise"
+- Pick based on the vibe: tech/minimal → "grid" or "dots", organic/artistic → "noise", bold → "gradient" or "crosshatch", retro → "diagonal"
+- "gradient" blends background into secondary color — works best when they complement each other
+- Never set "none" unless the prompt explicitly asks for a plain background
 
 Color contrast and readability rules (apply these UNLESS the user's prompt explicitly requests specific colors or a style that intentionally breaks them):
 - text_color must always be highly readable against background_color. If background_color is dark, use a light text_color, and vice versa. Never use a text color that is close to the background color.

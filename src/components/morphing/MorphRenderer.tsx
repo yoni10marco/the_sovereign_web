@@ -8,6 +8,25 @@ interface MorphRendererProps {
   config: SiteConfig;
 }
 
+function getBgPatternStyle(pattern: string | undefined, secondary: string): React.CSSProperties {
+  switch (pattern) {
+    case "dots":
+      return { backgroundImage: "radial-gradient(circle, rgba(128,128,128,0.18) 1px, transparent 1px)", backgroundSize: "24px 24px" };
+    case "grid":
+      return { backgroundImage: "linear-gradient(rgba(128,128,128,0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(128,128,128,0.12) 1px, transparent 1px)", backgroundSize: "32px 32px" };
+    case "diagonal":
+      return { backgroundImage: "repeating-linear-gradient(45deg, transparent, transparent 18px, rgba(128,128,128,0.07) 18px, rgba(128,128,128,0.07) 19px)" };
+    case "crosshatch":
+      return { backgroundImage: "repeating-linear-gradient(45deg, transparent, transparent 14px, rgba(128,128,128,0.07) 14px, rgba(128,128,128,0.07) 15px), repeating-linear-gradient(-45deg, transparent, transparent 14px, rgba(128,128,128,0.07) 14px, rgba(128,128,128,0.07) 15px)" };
+    case "gradient":
+      return { backgroundImage: `linear-gradient(135deg, transparent 0%, ${secondary}55 100%)` };
+    case "noise":
+      return { backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E\")", backgroundRepeat: "repeat", backgroundSize: "256px 256px" };
+    default:
+      return {};
+  }
+}
+
 export function MorphRenderer({ config }: MorphRendererProps) {
   const { theme } = config;
   const [currentSlug, setCurrentSlug] = useState<string | null>(null);
@@ -41,6 +60,7 @@ export function MorphRenderer({ config }: MorphRendererProps) {
 
   const sorted = [...componentsToRender].sort((a, b) => a.order - b.order);
   const pages = config.pages ?? [];
+  const patternStyle = getBgPatternStyle(theme.background_pattern, theme.secondary_color);
 
   return (
     <div
@@ -57,6 +77,7 @@ export function MorphRenderer({ config }: MorphRendererProps) {
         backgroundColor: theme.background_color,
         color: theme.text_color,
         fontFamily: `"${theme.font_body}", sans-serif`,
+        ...patternStyle,
       } as React.CSSProperties}
     >
       <style>{`

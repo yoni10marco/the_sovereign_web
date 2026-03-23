@@ -11,15 +11,17 @@ export function NavigationBar({ logo_text, links, _navigate, _currentSlug, _page
 
   function renderLink(link: { label: string; url: string }, i: number) {
     const { label, url } = link;
+    // Normalize: strip leading slash so "/about" matches slug "about"
+    const slug = url.replace(/^\//, "");
 
     // Internal page navigation
-    if (_navigate && pagesSlugs.has(url)) {
+    if (_navigate && pagesSlugs.has(slug)) {
       return (
         <button
           key={i}
-          onClick={() => _navigate(url)}
+          onClick={() => _navigate(slug)}
           className="text-sm font-medium opacity-80 hover:opacity-100 cursor-pointer transition-opacity"
-          style={{ color: _currentSlug === url ? "var(--morph-accent)" : undefined }}
+          style={{ color: _currentSlug === slug ? "var(--morph-accent)" : undefined }}
         >
           {label}
         </button>
