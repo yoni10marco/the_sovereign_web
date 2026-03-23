@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 // Debug-only: ends the active cycle immediately by setting ends_at to now
 export async function POST() {
@@ -7,7 +7,7 @@ export async function POST() {
     return NextResponse.json({ error: "Debug only" }, { status: 403 });
   }
 
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const { data: cycle, error } = await supabase
     .from("morph_cycles")

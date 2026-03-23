@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { generateSiteConfig } from "@/lib/morphing/gemini";
 
 // This endpoint is triggered by a cron job at 00:00 UTC (or manually during dev)
@@ -14,7 +14,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   // Get current active cycle
   const { data: cycle } = await supabase

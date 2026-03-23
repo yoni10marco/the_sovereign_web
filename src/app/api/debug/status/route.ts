@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 export async function GET() {
   if (process.env.NEXT_PUBLIC_DEBUG_PANEL !== "true") {
     return NextResponse.json({ error: "Debug only" }, { status: 403 });
   }
 
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const { data: cycles, error: cyclesError } = await supabase
     .from("morph_cycles")
