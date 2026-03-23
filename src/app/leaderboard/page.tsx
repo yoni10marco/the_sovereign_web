@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { ProposalCard } from "@/components/voting/ProposalCard";
 import { Countdown } from "@/components/ui/Countdown";
 import { AdSlot } from "@/components/layout/AdSlot";
@@ -6,7 +6,7 @@ import { AdSlot } from "@/components/layout/AdSlot";
 export const revalidate = 0;
 
 export default async function LeaderboardPage() {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   // Get current active cycle
   const { data: cycle } = await supabase
