@@ -32,7 +32,7 @@ You MUST return ONLY valid JSON (no markdown, no code fences, no explanation) ma
   ]
 }
 
-The "pages" field is OPTIONAL. Use it only when the prompt calls for multi-page content (e.g. "with an about page", "create multiple sections/pages", etc.). You can include up to 10 sub-pages. Each sub-page has its own components array. Navigation links can reference a sub-page by its slug as the url value, e.g. { "label": "About", "url": "about" }. Sub-pages are flat (no sub-sub-pages).
+The "pages" field is REQUIRED. Always generate 2-3 sub-pages. Each sub-page has its own components array. Navigation links reference a sub-page by its exact slug as the url value, e.g. { "label": "About", "url": "about" }. Sub-pages are flat (no sub-sub-pages).
 
 Available component types and their props:
 
@@ -107,10 +107,11 @@ Rules:
 - Do NOT include any image URLs in hero or article components (background_image, image fields) - leave them out
 - Use emojis as icons in features components
 - When using video_embed, provide real-looking YouTube URLs with plausible video IDs
-- Navigation links MUST use one of these url formats: a sub-page slug (must exist in the pages array), "https://..." (external), or "#anchor". Never invent a url that doesn't match one of these — if a nav link would point to a page that doesn't exist yet, either create that sub-page in the pages array or omit the link entirely.
-- CRITICAL: the url value in a nav link for a sub-page MUST be the EXACT same string as that page's slug field. Copy-paste the slug value — do not paraphrase it.
-- Only add pages when the prompt clearly benefits from multi-page structure; most prompts don't need sub-pages
-- When using pages, each sub-page MUST have different components and content than the homepage — never duplicate the homepage layout. Sub-pages should focus on their specific topic (e.g. an "About" page has bio/team/story content, not another hero section identical to the homepage).
+- ALWAYS generate 2-3 sub-pages in the "pages" array. Every site must be multi-page. Choose sub-pages that make sense for the theme (e.g. "About", "Gallery", "Contact", "Team", "Blog", "Services", "Portfolio", etc.)
+- ALWAYS add navigation links for every sub-page in the homepage navigation component's "links" array. Use the sub-page slug as the url value.
+- CRITICAL: the url value in a nav link for a sub-page MUST be the EXACT same string as that page's slug field. Copy-paste the slug — do not paraphrase it.
+- Navigation links may also use "https://..." (external) or "#anchor" formats — but never invent a url that doesn't match a real sub-page slug, external link, or anchor.
+- Each sub-page MUST have different components and content than the homepage — never duplicate the homepage layout. Sub-pages focus on their specific topic (e.g. an "About" page has bio/team/story content, not another hero section identical to the homepage).
 
 Background pattern rules:
 - "background_pattern" is OPTIONAL but STRONGLY ENCOURAGED — always set it to make the site feel unique
