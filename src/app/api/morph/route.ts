@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { generateSiteConfig } from "@/lib/morphing/gemini";
 
@@ -99,6 +100,9 @@ export async function POST(request: Request) {
     ends_at: new Date(now.getTime() + 24 * 60 * 60 * 1000).toISOString(),
     status: "active",
   });
+
+  // Purge cached homepage so the new config shows immediately
+  revalidatePath("/");
 
   return NextResponse.json({
     message: "Morph complete",

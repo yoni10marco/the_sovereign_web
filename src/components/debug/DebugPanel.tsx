@@ -15,6 +15,9 @@ export function DebugPanel() {
       const res = await fetch("/api/morph", { method: "POST" });
       const data = await res.json();
       setResult(JSON.stringify(data, null, 2));
+      if (res.ok) {
+        setTimeout(() => window.location.assign("/"), 1500);
+      }
     } catch (e) {
       setResult(`Error: ${e}`);
     }
