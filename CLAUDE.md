@@ -17,8 +17,10 @@ The Sovereign Web is a generative social platform where the website morphs every
 - **Next.js 15** (App Router) + **React 19** + **TypeScript** + **Tailwind CSS v4**
 - **Supabase** for auth, database, realtime, and storage (`@supabase/ssr`)
 - **Zustand** for client state
-- **Gemini API** for morphing config generation
-- **Polar** for payments
+- **Gemini API** (`gemini-3.1-flash-lite-preview`) for morphing config generation
+- **Polar** for payments (stubbed)
+- **Google Fonts** — loaded dynamically per morph
+- **Unsplash** — gallery images use `source.unsplash.com` URLs (no API key)
 
 ## Architecture
 
@@ -26,22 +28,30 @@ The Sovereign Web is a generative social platform where the website morphs every
 
 The homepage is a **stateless shell** that renders from a `SiteConfig` object (defined in `src/lib/morphing/config-schema.ts`). A `SiteConfig` contains a `ThemeConfig` (colors, fonts, border-radius) and an ordered array of `ComponentConfig` entries.
 
-Each `ComponentConfig` has a `type` string (e.g. `"hero"`, `"bento_grid"`, `"ticker"`) mapped to a React component via `COMPONENT_REGISTRY` in `src/components/morphing/registry.ts`. There are 15 atomic components in `src/components/morphing/components/`. `MorphRenderer` iterates the config and renders them.
+Each `ComponentConfig` has a `type` string (e.g. `"hero"`, `"bento_grid"`, `"ticker"`) mapped to a React component via `COMPONENT_REGISTRY` in `src/components/morphing/registry.ts`. There are 15 atomic components in `src/components/morphing/components/`. `MorphRenderer` iterates the config, loads Google Fonts dynamically, and renders them.
 
 The AI output is restricted to JSON parameters — no raw JS injection. See `src/lib/morphing/sanitizer.ts`.
 
-### API Routes
+### Supabase Clients
 
-- `POST /api/morph` — Triggers morphing cycle (calls Gemini, stores new config)
-- `POST /api/pulse/claim` — Claim pulse (regenerating likes)
-- `POST /api/vote` — Cast votes on proposals
-
-### Supabase Integration
-
-- Server client: `src/lib/supabase/server.ts` (uses `@supabase/ssr` with cookie-based auth)
-- Browser client: `src/lib/supabase/client.ts`
+- **Server client**: `src/lib/supabase/server.ts` — cookie-based auth for API routes
+- **Admin client**: `src/lib/supabase/admin.ts` — uses `SUPABASE_SERVICE_ROLE_KEY` to bypass RLS. Used by all server API routes that query/mutate data.
+- **Browser client**: `src/lib/supabase/client.ts` — singleton, used only for auth state on the client side. **Do NOT use for data queries** — browser anon key + RLS causes queries to hang indefinitely. Route all data operations through server API endpoints using the admin client.
 - Auth middleware: `src/middleware.ts`
 - Auth flow: `src/app/(auth)/` route group (login, signup, callback)
+
+### API Routes
+
+- `POST /api/morph` — Triggers morphing cycle (picks winner, calls Gemini, stores config, creates next cycle)
+- `POST /api/submit` — Submit a proposal (auth via cookies, DB via admin client)
+- `POST /api/vote` — Cast votes on proposals
+- `POST /api/pulse/claim` — Claim pulse (regenerating likes)
+- `GET /api/debug/status` — Inspect DB state (gated by `NEXT_PUBLIC_DEBUG_PANEL`)
+- `POST /api/debug/end-cycle` — End active cycle immediately (gated by `NEXT_PUBLIC_DEBUG_PANEL`)
+
+### Debug Panel
+
+`src/components/debug/DebugPanel.tsx` — floating panel with Status, End Vote, and Morph Now buttons. Controlled by `NEXT_PUBLIC_DEBUG_PANEL=true` env var (works on Vercel, not just dev mode).
 
 ### Key Constants (`src/lib/constants.ts`)
 
@@ -52,4 +62,6 @@ Cycle duration (24h), pulse interval (5h), like allocations (free: 5, pro: 25), 
 Required in `.env.local`:
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY`
 - `GEMINI_API_KEY`
+- `NEXT_PUBLIC_DEBUG_PANEL` — set to `"true"` to enable debug panel
