@@ -40,16 +40,18 @@ export default function SubmitPage() {
     try {
       // Get active cycle
       console.log("[submit] fetching active cycle...");
-      const { data: cycle } = await supabase
+      const { data: cycle, error: cycleError } = await supabase
         .from("morph_cycles")
         .select("id")
         .eq("status", "active")
         .order("cycle_number", { ascending: false })
         .limit(1)
-        .single();
+        .maybeSingle();
+
+      console.log("[submit] cycle result:", cycle, "error:", cycleError);
 
       if (!cycle) {
-        setError("No active cycle found");
+        setError("No active cycle found" + (cycleError ? ": " + cycleError.message : ""));
         setLoading(false);
         return;
       }
