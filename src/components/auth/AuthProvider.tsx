@@ -43,15 +43,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setSession(session);
       setUser(session?.user ?? null);
 
-      if (session?.user) {
-        const { data } = await supabase
-          .from("profiles")
-          .select("*")
-          .eq("id", session.user.id)
-          .single();
-        setProfile(data);
-      }
       setLoading(false);
+      if (session?.user) {
+        fetch("/api/profile")
+          .then((r) => r.ok ? r.json() : null)
+          .then((data) => { if (data) setProfile(data); });
+      }
     };
 
     getSession();
@@ -63,12 +60,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(session?.user ?? null);
 
       if (session?.user) {
-        const { data } = await supabase
-          .from("profiles")
-          .select("*")
-          .eq("id", session.user.id)
-          .single();
-        setProfile(data);
+        fetch("/api/profile")
+          .then((r) => r.ok ? r.json() : null)
+          .then((data) => { if (data) setProfile(data); });
       } else {
         setProfile(null);
       }
