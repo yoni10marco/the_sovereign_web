@@ -58,7 +58,7 @@ export async function POST(request: Request) {
   }
 
   // Generate site config
-  const siteConfig = await generateSiteConfig(
+  const { config: siteConfig, error: geminiError } = await generateSiteConfig(
     winner.prompt,
     (winner.image_urls as string[] | null) ?? (winner.image_url ? [winner.image_url] : []),
     cycle.cycle_number
@@ -108,5 +108,6 @@ export async function POST(request: Request) {
     message: "Morph complete",
     winner: winner.prompt,
     cycle: cycle.cycle_number,
+    ...(geminiError ? { gemini_error: geminiError } : {}),
   });
 }

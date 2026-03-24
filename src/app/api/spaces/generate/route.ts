@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
     .eq("id", spaceId);
 
   try {
-    const config = await generateSiteConfig(
+    const { config } = await generateSiteConfig(
       space.prompt,
       space.image_urls ?? [],
       0 // spaces don't use cycle numbers; use 0

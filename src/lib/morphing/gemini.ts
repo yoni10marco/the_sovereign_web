@@ -143,14 +143,15 @@ export async function generateSiteConfig(
   prompt: string,
   imageUrls: string[],
   cycleNumber: number
-): Promise<SiteConfig> {
+): Promise<{ config: SiteConfig; error?: string }> {
   const apiKey = process.env.GEMINI_API_KEY;
 
   if (!apiKey) {
-    console.error("GEMINI_API_KEY not set, using fallback config");
+    const msg = "GEMINI_API_KEY not set, using fallback config";
+    console.error(msg);
     const fb = fallbackConfig(prompt, cycleNumber);
     if (imageUrls.length) injectImagesIntoConfig(fb, imageUrls);
-    return fb;
+    return { config: fb, error: msg };
   }
 
   try {
@@ -177,16 +178,22 @@ export async function generateSiteConfig(
 
     if (!response.ok) {
       const errText = await response.text();
-      console.error("Gemini API error:", response.status, errText);
-      return fallbackConfig(prompt, cycleNumber);
+      const msg = `Gemini API error ${response.status}: ${errText.slice(0, 300)}`;
+      console.error(msg);
+      const fb = fallbackConfig(prompt, cycleNumber);
+      if (imageUrls.length) injectImagesIntoConfig(fb, imageUrls);
+      return { config: fb, error: msg };
     }
 
     const data = await response.json();
     const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
 
     if (!text) {
-      console.error("Gemini returned no text:", JSON.stringify(data));
-      return fallbackConfig(prompt, cycleNumber);
+      const msg = `Gemini returned no text: ${JSON.stringify(data).slice(0, 300)}`;
+      console.error(msg);
+      const fb = fallbackConfig(prompt, cycleNumber);
+      if (imageUrls.length) injectImagesIntoConfig(fb, imageUrls);
+      return { config: fb, error: msg };
     }
 
     const parsed = JSON.parse(text);
@@ -195,8 +202,11 @@ export async function generateSiteConfig(
 
     const sanitized = sanitizeConfig(parsed);
     if (!sanitized) {
-      console.error("Gemini output failed sanitization:", text.slice(0, 500));
-      return fallbackConfig(prompt, cycleNumber);
+      const msg = `Gemini output failed sanitization: ${text.slice(0, 300)}`;
+      console.error(msg);
+      const fb = fallbackConfig(prompt, cycleNumber);
+      if (imageUrls.length) injectImagesIntoConfig(fb, imageUrls);
+      return { config: fb, error: msg };
     }
 
     // Inject the uploaded images into the gallery component if provided
@@ -204,12 +214,13 @@ export async function generateSiteConfig(
       injectImagesIntoConfig(sanitized, imageUrls);
     }
 
-    return sanitized;
+    return { config: sanitized };
   } catch (err) {
-    console.error("Gemini generation failed:", err);
+    const msg = `Gemini generation failed: ${String(err)}`;
+    console.error(msg);
     const fb = fallbackConfig(prompt, cycleNumber);
     if (imageUrls.length) injectImagesIntoConfig(fb, imageUrls);
-    return fb;
+    return { config: fb, error: msg };
   }
 }
 
