@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Zap, Check } from "lucide-react";
 import { AdSlot } from "@/components/layout/AdSlot";
 import { useAuth } from "@/components/auth/AuthProvider";
 
@@ -44,10 +45,10 @@ export function ClaimPulseButton({ onClaimed }: ClaimPulseButtonProps) {
         disabled={step !== "idle"}
         className="px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 disabled:opacity-50 text-white font-semibold rounded-xl transition-all"
       >
-        {step === "idle" && "⚡ Claim Your Pulse"}
+        {step === "idle" && <><Zap size={14} className="inline mr-1" />Claim Your Pulse</>}
         {step === "ad" && "Watching ad..."}
         {step === "claiming" && "Claiming..."}
-        {step === "done" && "✓ Pulse Claimed!"}
+        {step === "done" && <><Check size={14} className="inline mr-1" />Pulse Claimed!</>}
       </button>
     </div>
   );

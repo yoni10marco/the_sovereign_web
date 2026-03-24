@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Heart } from "lucide-react";
 import { useAuth } from "@/components/auth/AuthProvider";
 import dayjs from "dayjs";
 
@@ -62,7 +63,7 @@ export function PulseIndicator() {
   return (
     <div className="flex items-center gap-2">
       <div className="flex items-center gap-1.5 px-3 py-1.5 bg-purple-500/10 border border-purple-500/20 rounded-full">
-        <span className="text-purple-400 text-sm">❤️</span>
+        <Heart size={14} className="text-purple-400" />
         <span className="text-sm font-medium text-purple-300">{totalLikes}</span>
         {timeLeft && (
           <span className="text-xs text-white/40 ml-1">({timeLeft})</span>

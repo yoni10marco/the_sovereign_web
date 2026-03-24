@@ -3,6 +3,7 @@ import { MorphRenderer } from "@/components/morphing/MorphRenderer";
 import { GENESIS_CONFIG } from "@/lib/morphing/genesis-config";
 import type { SiteConfig } from "@/lib/morphing/config-schema";
 import Link from "next/link";
+import { Castle, ArrowLeft, Clock } from "lucide-react";
 
 export const revalidate = 60;
 
@@ -26,7 +27,7 @@ export default async function SpacePage({ params }: Props) {
         <h1 className="text-2xl font-bold mb-3">Space Not Found</h1>
         <p className="text-white/50 mb-6">This space doesn&apos;t exist or has been removed.</p>
         <Link href="/spaces" className="text-amber-400 hover:underline">
-          ← Back to Spaces
+          <ArrowLeft size={14} className="inline mr-1" />Back to Spaces
         </Link>
       </div>
     );
@@ -40,7 +41,7 @@ export default async function SpacePage({ params }: Props) {
   if (space.status === "generating") {
     return (
       <div className="max-w-2xl mx-auto px-4 py-20 text-center">
-        <div className="text-5xl mb-6 animate-pulse">🏰</div>
+        <Castle size={48} className="text-amber-400/60 mx-auto mb-6 animate-pulse" />
         <h2 className="text-2xl font-bold mb-3">Building Your Space...</h2>
         <p className="text-white/50 mb-6">The AI is still conjuring your site. Refresh in a moment.</p>
         <button
@@ -56,11 +57,11 @@ export default async function SpacePage({ params }: Props) {
   if (space.status === "pending" || !space.site_config) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-20 text-center">
-        <div className="text-5xl mb-6">⏳</div>
+        <Clock size={48} className="text-white/30 mx-auto mb-6" />
         <h2 className="text-2xl font-bold mb-3">Space Pending Generation</h2>
         <p className="text-white/50 mb-6">Something went wrong during generation.</p>
         <Link href="/spaces" className="text-amber-400 hover:underline">
-          ← Back to Spaces
+          <ArrowLeft size={14} className="inline mr-1" />Back to Spaces
         </Link>
       </div>
     );
@@ -73,7 +74,7 @@ export default async function SpacePage({ params }: Props) {
       {/* Space banner */}
       <div className="fixed top-16 left-0 right-0 z-40 flex items-center justify-between px-4 py-2 bg-black/80 backdrop-blur border-b border-white/10 text-sm">
         <div className="flex items-center gap-2">
-          <span>🏰</span>
+          <Castle size={14} className="text-amber-400" />
           <span className="font-semibold text-amber-400">{space.title}</span>
           {isExpired ? (
             <span className="text-red-400 text-xs">(expired)</span>
@@ -82,7 +83,7 @@ export default async function SpacePage({ params }: Props) {
           )}
         </div>
         <Link href="/spaces" className="text-white/50 hover:text-white text-xs transition-colors">
-          ← My Spaces
+          <ArrowLeft size={14} className="inline mr-1" />My Spaces
         </Link>
       </div>
       {/* Offset content below banner */}

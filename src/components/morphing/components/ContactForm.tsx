@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { CheckCircle } from "lucide-react";
 import type { ContactFormProps } from "@/lib/morphing/config-schema";
 
 const FIELD_LABELS: Record<string, string> = {
@@ -32,7 +33,7 @@ export function ContactForm({
           className="text-center py-8"
           style={{ background: "var(--morph-secondary)", borderRadius: "var(--morph-radius)" }}
         >
-          <p className="text-2xl mb-2">✅</p>
+          <CheckCircle size={32} className="mx-auto mb-2" style={{ color: "var(--morph-accent)" }} />
           <p className="font-semibold">Message sent!</p>
         </div>
       ) : (

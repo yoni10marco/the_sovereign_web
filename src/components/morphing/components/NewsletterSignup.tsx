@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { CheckCircle } from "lucide-react";
 import type { NewsletterSignupProps } from "@/lib/morphing/config-schema";
 
 export function NewsletterSignup({
@@ -24,7 +25,7 @@ export function NewsletterSignup({
 
       {submitted ? (
         <p className="text-lg font-semibold" style={{ color: "var(--morph-accent)" }}>
-          ✅ You&apos;re subscribed!
+          <CheckCircle size={18} className="inline mr-2" />You&apos;re subscribed!
         </p>
       ) : (
         <form

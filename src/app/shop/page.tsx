@@ -1,5 +1,6 @@
 "use client";
 
+import { Crown, Heart, Bomb } from "lucide-react";
 import { PRODUCTS } from "@/lib/polar";
 import { useAuth } from "@/components/auth/AuthProvider";
 
@@ -21,7 +22,7 @@ export default function ShopPage() {
         <div className="flex items-start justify-between">
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <span className="text-yellow-400 text-xl">👑</span>
+              <Crown size={20} className="text-yellow-400" />
               <h2 className="text-2xl font-bold">Sovereign Pass</h2>
               {profile?.is_pro && (
                 <span className="px-2 py-0.5 text-xs font-bold bg-yellow-500/20 text-yellow-400 rounded-full">ACTIVE</span>
@@ -31,10 +32,10 @@ export default function ShopPage() {
               Go ad-free, get 25 likes per pulse with stacking, and stand out with a golden Pro badge.
             </p>
             <ul className="mt-4 space-y-2 text-sm text-white/70">
-              <li>✓ No ads — ever</li>
-              <li>✓ 25 likes per pulse (5x more)</li>
-              <li>✓ Stack up to 2 pulses</li>
-              <li>✓ Golden username & Pro badge</li>
+              <li>No ads — ever</li>
+              <li>25 likes per pulse (5x more)</li>
+              <li>Stack up to 2 pulses</li>
+              <li>Golden username & Pro badge</li>
             </ul>
           </div>
           <div className="text-right">
@@ -56,7 +57,7 @@ export default function ShopPage() {
       <div className="grid md:grid-cols-2 gap-4">
         <div className="p-6 bg-white/5 border border-white/10 rounded-xl">
           <div className="flex items-center gap-3 mb-3">
-            <span className="text-2xl">❤️</span>
+            <Heart size={24} className="text-purple-400" />
             <div>
               <h3 className="font-semibold">{PRODUCTS.like_pack.name}</h3>
               <p className="text-sm text-white/50">{PRODUCTS.like_pack.description}</p>
@@ -75,7 +76,7 @@ export default function ShopPage() {
 
         <div className="p-6 bg-white/5 border border-red-500/10 rounded-xl">
           <div className="flex items-center gap-3 mb-3">
-            <span className="text-2xl">💣</span>
+            <Bomb size={24} className="text-red-400" />
             <div>
               <h3 className="font-semibold text-red-400">{PRODUCTS.dislike_bomb.name}</h3>
               <p className="text-sm text-white/50">{PRODUCTS.dislike_bomb.description}</p>

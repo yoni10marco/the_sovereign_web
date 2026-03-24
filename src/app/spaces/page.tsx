@@ -1,5 +1,6 @@
 "use client";
 
+import { Castle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/components/auth/AuthProvider";
 import Link from "next/link";
@@ -54,7 +55,7 @@ function SpaceCard({ space }: { space: Space }) {
             href={`/spaces/${space.id}`}
             className="px-3 py-1 bg-amber-500 hover:bg-amber-400 text-black font-semibold rounded-lg transition-colors text-xs"
           >
-            View Space →
+            View Space
           </Link>
         )}
         {space.status === "generating" && (
@@ -107,7 +108,7 @@ export default function SpacesPage() {
       {/* Pricing info */}
       <div className="mb-8 p-5 bg-white/3 border border-white/10 rounded-2xl flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
         <div>
-          <p className="font-semibold mb-1">🏰 Own a Private Space</p>
+          <p className="font-semibold mb-1 flex items-center gap-2"><Castle size={16} className="text-amber-400" />Own a Private Space</p>
           <p className="text-white/50 text-sm">
             Your site, your rules. The AI builds whatever you dream up — live for 24 hours with no community votes.
           </p>
@@ -133,7 +134,7 @@ export default function SpacesPage() {
         <div className="text-center py-16 text-white/30">Loading your spaces...</div>
       ) : spaces.length === 0 ? (
         <div className="text-center py-16 border border-dashed border-white/10 rounded-2xl">
-          <span className="text-4xl mb-4 block">🏰</span>
+          <Castle size={40} className="text-amber-400/40 mx-auto mb-4" />
           <p className="text-white/50 mb-6">You don&apos;t have any spaces yet.</p>
           <Link
             href="/spaces/create"

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { Zap } from "lucide-react";
 import { UserMenu } from "@/components/auth/UserMenu";
 import { PulseIndicator } from "@/components/pulse/PulseIndicator";
 import { useAuth } from "@/components/auth/AuthProvider";
@@ -23,7 +24,7 @@ export function Header() {
       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
         <div className="flex items-center gap-4 sm:gap-8">
           <Link href="/" className="text-lg font-bold text-white">
-            <span className="text-purple-400">⚡</span> Sovereign Web
+            <Zap size={16} className="text-purple-400" /> Sovereign Web
           </Link>
           <nav className="hidden md:flex items-center gap-6">
             {NAV_LINKS.map((link) => (

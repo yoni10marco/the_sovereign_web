@@ -36,7 +36,7 @@ export const GENESIS_CONFIG: SiteConfig = {
         headline: "The Web Belongs to You",
         subheadline: "Every 24 hours, this website transforms based on YOUR vote. Submit a vision. Rally the crowd. Reshape the internet.",
         alignment: "center",
-        cta_text: "Submit Your Vision →",
+        cta_text: "Submit Your Vision",
         cta_url: "/submit",
       },
     },
@@ -59,9 +59,9 @@ export const GENESIS_CONFIG: SiteConfig = {
       order: 3,
       props: {
         features: [
-          { title: "Submit", description: "Upload your vision with an image and prompt. What should this site become?", icon: "🎨" },
-          { title: "Vote", description: "Use your Pulse likes to vote for the ideas you love. Every like counts.", icon: "❤️" },
-          { title: "Morph", description: "At midnight UTC, the winning vision comes alive. The entire site transforms.", icon: "✨" },
+          { title: "Submit", description: "Upload your vision with an image and prompt. What should this site become?", icon: "Palette" },
+          { title: "Vote", description: "Use your Pulse likes to vote for the ideas you love. Every like counts.", icon: "Heart" },
+          { title: "Morph", description: "At midnight UTC, the winning vision comes alive. The entire site transforms.", icon: "Sparkles" },
         ],
       },
     },

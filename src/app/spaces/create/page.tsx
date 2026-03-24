@@ -1,5 +1,6 @@
 "use client";
 
+import { Castle, CreditCard } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { useRouter } from "next/navigation";
@@ -101,7 +102,7 @@ export default function CreateSpacePage() {
   if (stage === "generating") {
     return (
       <div className="max-w-2xl mx-auto px-4 py-20 text-center">
-        <div className="text-5xl mb-6 animate-pulse">🏰</div>
+        <Castle size={48} className="text-amber-400/60 mx-auto mb-6 animate-pulse" />
         <h2 className="text-2xl font-bold mb-3">Building Your Space...</h2>
         <p className="text-white/50">
           The AI is conjuring your sovereign corner of the web. This takes about 10–20 seconds.
@@ -118,7 +119,7 @@ export default function CreateSpacePage() {
           Describe your vision and the AI will build a full site just for you — live for 24 hours.
         </p>
         <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-amber-500/10 border border-amber-500/20 rounded-lg text-amber-400 text-sm">
-          <span>💳</span>
+          <CreditCard size={16} />
           <span>$9.99 / 24 hours — payment stubbed, free during beta</span>
         </div>
       </div>
@@ -196,7 +197,7 @@ export default function CreateSpacePage() {
           disabled={loading || !title || !prompt}
           className="w-full py-3 px-4 bg-amber-500 hover:bg-amber-400 disabled:opacity-50 text-black font-bold rounded-lg transition-colors"
         >
-          {loading ? "Processing..." : "Launch My Space →"}
+          {loading ? "Processing..." : "Launch My Space"}
         </button>
 
         {!user && (

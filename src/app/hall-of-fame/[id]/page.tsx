@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { MorphRenderer } from "@/components/morphing/MorphRenderer";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { ArrowLeft, Heart } from "lucide-react";
 
 export default async function HallOfFameEntryPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -22,11 +23,11 @@ export default async function HallOfFameEntryPage({ params }: { params: Promise<
       <div className="bg-gray-950 border-b border-white/10 px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Link href="/hall-of-fame" className="text-sm text-white/50 hover:text-white">
-            ← Back
+            <ArrowLeft size={14} className="inline mr-1" />Back
           </Link>
           <span className="text-sm font-mono text-purple-400">Cycle #{entry.cycle_number}</span>
           <span className="text-sm text-white/50">by {entry.winner_username}</span>
-          <span className="text-sm text-white/30">❤️ {entry.total_votes}</span>
+          <span className="text-sm text-white/30 flex items-center gap-1"><Heart size={13} /> {entry.total_votes}</span>
         </div>
       </div>
       <MorphRenderer config={entry.site_config} />

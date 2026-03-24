@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Heart } from "lucide-react";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { useRouter } from "next/navigation";
 
@@ -62,7 +63,7 @@ export function VoteButton({ proposalId }: VoteButtonProps) {
         disabled={voting}
         className="px-4 py-2 text-sm font-medium bg-purple-600 hover:bg-purple-500 disabled:opacity-50 text-white rounded-lg transition-colors"
       >
-        {voting ? "..." : `Vote ❤️`}
+        {voting ? "..." : <><Heart size={13} className="inline mr-1" />Vote</>}
       </button>
       {error && <span className="text-xs text-red-400">{error}</span>}
     </div>

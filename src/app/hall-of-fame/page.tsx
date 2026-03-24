@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
+import { Globe, Heart } from "lucide-react";
 
 export const revalidate = 60;
 
@@ -35,13 +36,13 @@ export default async function HallOfFamePage() {
             )}
             {!entry.image_url && (
               <div className="w-full h-40 bg-gradient-to-br from-purple-900/30 to-purple-600/10 flex items-center justify-center">
-                <span className="text-4xl">🌐</span>
+                <Globe size={40} className="text-purple-400/40" />
               </div>
             )}
             <div className="p-4">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs font-mono text-purple-400">Cycle #{entry.cycle_number}</span>
-                <span className="text-xs text-white/40">❤️ {entry.total_votes ?? 0}</span>
+                <span className="text-xs text-white/40 flex items-center gap-1"><Heart size={11} />  {entry.total_votes ?? 0}</span>
               </div>
               <p className="text-sm text-white/70 line-clamp-2">{entry.prompt}</p>
               <p className="text-xs text-white/40 mt-2">Winner: {entry.winner_username}</p>
