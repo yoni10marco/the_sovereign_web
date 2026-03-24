@@ -9,6 +9,9 @@ const VALID_TYPES: ComponentType[] = [
   "callout_box", "masonry_gallery", "contact_form", "embed_block",
   "code_block", "marquee", "profile_card", "numbered_steps",
   "comparison_table", "newsletter_signup",
+  "retro_terminal", "glassmorphism_panel", "mesh_gradient",
+  "scratch_card", "interactive_poll", "confetti_trigger",
+  "polaroid_stack", "magazine_spread", "live_counter", "reaction_cloud",
 ];
 
 const HEX_COLOR = /^#[0-9a-fA-F]{3,8}$/;
