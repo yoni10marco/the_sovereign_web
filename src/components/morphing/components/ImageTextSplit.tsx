@@ -1,9 +1,10 @@
 import type { ImageTextSplitProps } from "@/lib/morphing/config-schema";
+import { SafeImage } from "../SafeImage";
 
 export function ImageTextSplit({ image, alt, title, body, cta_text, cta_url, image_side = "left" }: ImageTextSplitProps) {
   const imgEl = (
     <div className="relative h-64 md:h-auto overflow-hidden" style={{ borderRadius: "var(--morph-radius)" }}>
-      <img src={image} alt={alt || title} className="w-full h-full object-cover" />
+      <SafeImage src={image} alt={alt || title} className="w-full h-full object-cover" />
     </div>
   );
 

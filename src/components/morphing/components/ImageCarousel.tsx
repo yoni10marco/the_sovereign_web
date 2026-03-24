@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { ImageCarouselProps } from "@/lib/morphing/config-schema";
+import { SafeImage } from "../SafeImage";
 
 export function ImageCarousel({ images, auto_play = true, interval = 4000 }: ImageCarouselProps) {
   const [index, setIndex] = useState(0);
@@ -21,7 +22,7 @@ export function ImageCarousel({ images, auto_play = true, interval = 4000 }: Ima
   return (
     <div className="relative w-full overflow-hidden" style={{ borderRadius: "var(--morph-radius)" }}>
       <div className="relative h-[420px] sm:h-[520px]">
-        <img
+        <SafeImage
           src={current.src}
           alt={current.alt}
           className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700"

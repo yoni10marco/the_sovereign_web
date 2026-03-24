@@ -103,13 +103,14 @@ Rules:
 - Always include "navigation" as the first component and "footer" as the last
 - Choose a creative and cohesive color theme that matches the user's prompt
 - Use varied component types - don't repeat the same type more than twice
-- For gallery/carousel images, use Unsplash source URLs like "https://images.unsplash.com/photo-{id}?w=600&h=400&fit=crop" — pick real Unsplash photo IDs that match the theme, or use "https://source.unsplash.com/600x400/?keyword" with a relevant keyword
+- For gallery/carousel images, ALWAYS use keyword-based Unsplash URLs: "https://source.unsplash.com/600x400/?keyword" — replace "keyword" with a specific relevant word (e.g. "coffee", "architecture", "forest", "jazz"). Never use photo ID URLs like "https://images.unsplash.com/photo-..." as those specific IDs may not exist.
 - For internal site links, use paths like /leaderboard, /submit, /hall-of-fame, /shop
 - Be creative with the content! Match the vibe and theme of the user's prompt
 - Write detailed, rich content: article bodies should be multiple paragraphs, features should have at least 6 items with substantive descriptions (2-3 sentences each), bento_grid items should have thorough descriptions, testimonials should feel personal and specific, FAQs should have thorough answers (3-5 sentences), stats should be interesting and varied, pricing plans should have 6-8 features each
 - Sub-pages must also be content-rich: each sub-page should use 5-8 components with detailed content specific to that page's topic
 - Do NOT include any image URLs in hero or article components (background_image, image fields) - leave them out
-- For icon fields (features, timeline, etc.) use Lucide icon names (e.g. "Zap", "Star", "Shield", "Globe", "Rocket", "Heart", "Code", "Users", "Trophy", "Leaf", "Camera", "Music", "Flame", "Lock", "Cpu", "Database", "Cloud", "Map", "Bell", "BookOpen"). NEVER use emojis.
+- CRITICAL: NEVER use emojis anywhere in the entire JSON output — not in text, descriptions, titles, quotes, ticker items, body copy, or any other string field. Emojis are completely forbidden.
+- For icon fields (features, timeline, etc.) use Lucide icon names (e.g. "Zap", "Star", "Shield", "Globe", "Rocket", "Heart", "Code", "Users", "Trophy", "Leaf", "Camera", "Music", "Flame", "Lock", "Cpu", "Database", "Cloud", "Map", "Bell", "BookOpen").
 - When using video_embed, provide real-looking YouTube URLs with plausible video IDs
 - Generate 2-3 sub-pages in the "pages" array by default. Choose sub-pages that make sense for the theme (e.g. "About", "Gallery", "Contact", "Team", "Blog", "Services", "Portfolio", etc.). Skip sub-pages ONLY if the prompt explicitly requests a single-page site.
 - ALWAYS add navigation links for every sub-page in the homepage navigation component's "links" array. Use the sub-page slug as the url value.

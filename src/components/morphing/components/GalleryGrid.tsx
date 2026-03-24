@@ -1,4 +1,5 @@
 import type { GalleryProps } from "@/lib/morphing/config-schema";
+import { SafeImage } from "../SafeImage";
 
 export function GalleryGrid({ images, columns = 3 }: GalleryProps) {
   const cols = Math.min(columns, 6);
@@ -10,7 +11,7 @@ export function GalleryGrid({ images, columns = 3 }: GalleryProps) {
       >
         {images?.map((img, i) => (
           <figure key={i} className="group overflow-hidden" style={{ borderRadius: "var(--morph-radius)" }}>
-            <img
+            <SafeImage
               src={img.src}
               alt={img.alt}
               className="w-full h-36 sm:h-48 object-cover group-hover:scale-105 transition-transform duration-300"
