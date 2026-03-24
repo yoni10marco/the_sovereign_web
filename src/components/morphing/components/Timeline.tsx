@@ -1,4 +1,5 @@
 import type { TimelineProps } from "@/lib/morphing/config-schema";
+import { IconRenderer } from "../IconRenderer";
 
 export function Timeline({ items, orientation = "vertical" }: TimelineProps) {
   if (!items || items.length === 0) return null;
@@ -37,7 +38,7 @@ export function Timeline({ items, orientation = "vertical" }: TimelineProps) {
               className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-sm z-10"
               style={{ background: "var(--morph-accent)", color: "var(--morph-background)" }}
             >
-              {item.icon || String(i + 1)}
+              {item.icon ? <IconRenderer name={item.icon} size={16} /> : String(i + 1)}
             </div>
             <div className="pt-1">
               <p className="text-xs font-semibold uppercase tracking-wider opacity-60 mb-1">{item.date}</p>

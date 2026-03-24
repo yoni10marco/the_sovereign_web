@@ -1,4 +1,5 @@
 import type { FeaturesProps } from "@/lib/morphing/config-schema";
+import { IconRenderer } from "../IconRenderer";
 
 export function FeatureCards({ features }: FeaturesProps) {
   return (
@@ -10,7 +11,11 @@ export function FeatureCards({ features }: FeaturesProps) {
             className="p-5 sm:p-6 border border-current/10 hover:border-current/20 transition-colors"
             style={{ borderRadius: "var(--morph-radius)" }}
           >
-            {f.icon && <span className="text-3xl mb-4 block">{f.icon}</span>}
+            {f.icon && (
+              <div className="mb-4" style={{ color: "var(--morph-accent)" }}>
+                <IconRenderer name={f.icon} size={28} />
+              </div>
+            )}
             <h3 className="text-lg font-semibold" style={{ color: "var(--morph-primary)" }}>
               {f.title}
             </h3>
