@@ -64,7 +64,17 @@ export type ComponentType =
   | "profile_card"
   | "numbered_steps"
   | "comparison_table"
-  | "newsletter_signup";
+  | "newsletter_signup"
+  | "retro_terminal"
+  | "glassmorphism_panel"
+  | "mesh_gradient"
+  | "scratch_card"
+  | "interactive_poll"
+  | "confetti_trigger"
+  | "polaroid_stack"
+  | "magazine_spread"
+  | "live_counter"
+  | "reaction_cloud";
 
 // ---- Existing prop interfaces ----
 
@@ -262,4 +272,70 @@ export interface NewsletterSignupProps {
   placeholder?: string;
   button_text?: string;
   disclaimer?: string;
+}
+
+export interface RetroTerminalProps {
+  title?: string;
+  lines: string[];
+  prompt_symbol?: string;
+  typing_speed?: "slow" | "normal" | "fast";
+}
+
+export interface GlassmorphismPanelProps {
+  title?: string;
+  items: { title: string; description: string; icon?: string }[];
+  background_image?: string;
+}
+
+export interface MeshGradientProps {
+  title?: string;
+  subtitle?: string;
+  cta_text?: string;
+  cta_url?: string;
+  colors?: string[];
+}
+
+export interface ScratchCardProps {
+  title?: string;
+  cover_text?: string;
+  reveal_text?: string;
+  reveal_image?: string;
+}
+
+export interface InteractivePollProps {
+  question: string;
+  options: string[];
+  allow_multiple?: boolean;
+}
+
+export interface ConfettiTriggerProps {
+  button_text?: string;
+  message?: string;
+  count?: number;
+}
+
+export interface PolaroidStackProps {
+  title?: string;
+  images: { src: string; alt: string; caption?: string }[];
+}
+
+export interface MagazineSpreadProps {
+  headline: string;
+  kicker?: string;
+  body: string;
+  image?: string;
+  pull_quote?: string;
+  author?: string;
+  tag?: string;
+}
+
+export interface LiveCounterProps {
+  label?: string;
+  base_count?: number;
+  show_pulse?: boolean;
+}
+
+export interface ReactionCloudProps {
+  title?: string;
+  emojis?: string[];
 }

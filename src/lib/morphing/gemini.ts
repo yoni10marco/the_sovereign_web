@@ -98,8 +98,39 @@ CONVERSION
 INFORMATION
 33. "faq" - { "items": [{ "question": string, "answer": string }] }
 
+ATMOSPHERE & VIBE
+34. "retro_terminal" - { "title"?: string, "lines": [string], "prompt_symbol"?: string, "typing_speed"?: "slow"|"normal"|"fast" }
+    - Renders a CLI-style terminal with typing animation. Use for hacker, tech, retro themes.
+    - lines is an array of command strings that appear one by one as if typed.
+35. "glassmorphism_panel" - { "title"?: string, "items": [{ "title": string, "description": string, "icon"?: string }], "background_image"?: string }
+    - Frosted-glass cards on a gradient/blurred background. Use for Apple-style, premium, modern UI themes.
+36. "mesh_gradient" - { "title"?: string, "subtitle"?: string, "cta_text"?: string, "cta_url"?: string, "colors"?: [string] }
+    - Animated blobs of color creating a "liquid gradient" background. Great for SaaS, design, creative themes.
+    - colors is an optional array of 3 hex color strings to override the default theme colors.
+
+INTERACTIVE
+37. "scratch_card" - { "title"?: string, "cover_text"?: string, "reveal_text"?: string, "reveal_image"?: string }
+    - A lottery-scratch-card the user scrubs with their mouse to reveal hidden content. Highly engaging.
+38. "interactive_poll" - { "question": string, "options": [string], "allow_multiple"?: boolean }
+    - A vote-and-reveal poll. Results shown as animated progress bars after voting.
+39. "confetti_trigger" - { "button_text"?: string, "message"?: string, "count"?: number }
+    - A button that launches a full-screen confetti explosion. Use for celebrations, wins, milestones.
+
+UNIQUE LAYOUTS
+40. "polaroid_stack" - { "title"?: string, "images": [{ "src": string, "alt": string, "caption"?: string }] }
+    - Images displayed as a draggable stack of Polaroid photos. For photo-heavy, personal, or artistic themes.
+41. "magazine_spread" - { "headline": string, "kicker"?: string, "body": string, "image"?: string, "pull_quote"?: string, "author"?: string, "tag"?: string }
+    - Full editorial magazine layout with big headline, multi-column body, pull quote. For news, journalism, editorial themes.
+
+DATA & LIVE
+42. "live_counter" - { "label"?: string, "base_count"?: number, "show_pulse"?: boolean }
+    - Animated counter showing "X people viewing this right now" with a pulsing dot. Creates social proof.
+43. "reaction_cloud" - { "title"?: string, "emojis"?: [string] }
+    - Floating emoji reactions that animate upward when clicked. Interactive and fun for community sites.
+
 Rules:
 - Use 8-15 components to create a rich, detailed, content-heavy page
+- The new atmosphere/interactive components (retro_terminal, glassmorphism_panel, mesh_gradient, scratch_card, interactive_poll, confetti_trigger, polaroid_stack, magazine_spread, live_counter, reaction_cloud) are highly encouraged when the theme fits — they make the site feel unique and alive
 - Always include "navigation" as the first component and "footer" as the last
 - Choose a creative and cohesive color theme that matches the user's prompt
 - Use varied component types - don't repeat the same type more than twice

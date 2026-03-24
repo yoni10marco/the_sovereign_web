@@ -32,6 +32,16 @@ import { ProfileCard } from "./components/ProfileCard";
 import { NumberedSteps } from "./components/NumberedSteps";
 import { ComparisonTable } from "./components/ComparisonTable";
 import { NewsletterSignup } from "./components/NewsletterSignup";
+import { RetroTerminal } from "./components/RetroTerminal";
+import { GlassmorphismPanel } from "./components/GlassmorphismPanel";
+import { MeshGradient } from "./components/MeshGradient";
+import { ScratchCard } from "./components/ScratchCard";
+import { InteractivePoll } from "./components/InteractivePoll";
+import { ConfettiTrigger } from "./components/ConfettiTrigger";
+import { PolaroidStack } from "./components/PolaroidStack";
+import { MagazineSpread } from "./components/MagazineSpread";
+import { LiveCounter } from "./components/LiveCounter";
+import { ReactionCloud } from "./components/ReactionCloud";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const COMPONENT_REGISTRY: Record<MorphComponentType, React.ComponentType<any>> = {
@@ -68,4 +78,14 @@ export const COMPONENT_REGISTRY: Record<MorphComponentType, React.ComponentType<
   numbered_steps: NumberedSteps,
   comparison_table: ComparisonTable,
   newsletter_signup: NewsletterSignup,
+  retro_terminal: RetroTerminal,
+  glassmorphism_panel: GlassmorphismPanel,
+  mesh_gradient: MeshGradient,
+  scratch_card: ScratchCard,
+  interactive_poll: InteractivePoll,
+  confetti_trigger: ConfettiTrigger,
+  polaroid_stack: PolaroidStack,
+  magazine_spread: MagazineSpread,
+  live_counter: LiveCounter,
+  reaction_cloud: ReactionCloud,
 };
