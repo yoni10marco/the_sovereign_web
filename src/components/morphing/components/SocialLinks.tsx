@@ -1,23 +1,20 @@
 import type { SocialLinksProps } from "@/lib/morphing/config-schema";
-import {
-  Twitter, Instagram, Facebook, Linkedin, Youtube,
-  Github, Music2, MessageCircle, Twitch, Rss,
-} from "lucide-react";
+import { Music2, MessageCircle, Play, Video, Rss, Hash, AtSign, Share2, Link as LinkIcon } from "lucide-react";
 import type { LucideProps } from "lucide-react";
 
 type IconComp = React.FC<LucideProps>;
 
 const PLATFORM_ICONS: Record<string, IconComp> = {
-  twitter:   Twitter,
-  x:         Twitter,
-  instagram: Instagram,
-  facebook:  Facebook,
-  linkedin:  Linkedin,
-  youtube:   Youtube,
-  github:    Github,
+  twitter:   AtSign,
+  x:         AtSign,
+  instagram: Hash,
+  facebook:  Share2,
+  linkedin:  LinkIcon,
+  youtube:   Play,
+  github:    MessageCircle,
   tiktok:    Music2,
   discord:   MessageCircle,
-  twitch:    Twitch,
+  twitch:    Video,
   spotify:   Music2,
   rss:       Rss,
 };
@@ -25,7 +22,7 @@ const PLATFORM_ICONS: Record<string, IconComp> = {
 const PLATFORM_TEXT: Record<string, string> = {
   pinterest: "P",
   snapchat:  "Snap",
-  reddit:    "Reddit",
+  reddit:    "r/",
 };
 
 export function SocialLinks({ links, size = "md", layout = "row" }: SocialLinksProps) {
