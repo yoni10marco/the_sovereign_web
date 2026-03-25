@@ -42,8 +42,14 @@ export async function middleware(request: NextRequest) {
     } = await supabase.auth.getUser();
     if (!user) {
       const url = request.nextUrl.clone();
-      url.pathname = "/login";
-      url.searchParams.set("redirect", request.nextUrl.pathname);
+      // Unauthenticated visitors to /spaces go to the public explore page
+      if (pathname === "/spaces") {
+        url.pathname = "/spaces/explore";
+        url.searchParams.delete("redirect");
+      } else {
+        url.pathname = "/login";
+        url.searchParams.set("redirect", pathname);
+      }
       return NextResponse.redirect(url);
     }
   }

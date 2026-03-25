@@ -33,6 +33,7 @@
 
 ## Nice to Have
 
-- [x] **Hall of Fame screenshots** — `/api/morph` now fires an async microlink.io request after archiving, stores the URL in `hall_of_fame.screenshot_url`. Hall of Fame list shows screenshot (falls back to proposal image). Requires `NEXT_PUBLIC_APP_URL` env var in production.
+- [x] **Hall of Fame screenshots** — `/api/morph` captures screenshot via microlink.io (awaited, not fire-and-forget) after archiving. Stored in `hall_of_fame.screenshot_url`. HoF list shows screenshot, falls back to proposal image. Requires `NEXT_PUBLIC_APP_URL` env var in production.
+- [x] **Hall of Fame titles** — Cards show winning proposal title. Falls back to `site_config` navigation `logo_text` (via `component.props.logo_text`) for old entries, then `Cycle #N`. `title` column added to `hall_of_fame` table (migration applied).
 - [x] **Realtime vote updates** — Fixed. `LiveVoteCount` now subscribes to a Supabase Broadcast channel (`vote-updates`). `/api/vote` broadcasts `{ proposalId, voteCount }` after each vote via admin client, bypassing RLS entirely.
 - [ ] **Anti-snipe extension** — Logic exists in vote API but needs testing. Should extend cycle by 60s if vote comes in during final 60s.

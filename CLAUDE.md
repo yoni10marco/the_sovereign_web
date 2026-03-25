@@ -91,6 +91,7 @@ Three components have cross-user shared state backed by Supabase: `live_counter`
 - **State shapes**: `live_counter` → `{ count }`, `reaction_cloud` → `{ reactions: { [emoji]: number } }`, `interactive_poll` → `{ votes: { [option]: number }, total }`.
 - **MorphRenderer** injects `_cycleId`, `_componentIndex`, `_liveState` into these three component types. `_liveState` is only set when rendering Hall of Fame entries (triggers read-only frozen mode).
 - **Archival**: `/api/morph` snapshots `component_states` into `hall_of_fame.live_state` (jsonb) before inserting the archive row. Hall of Fame entries render components as read-only with final counts.
+- **Hall of Fame table** extra fields: `title` (winning proposal title), `screenshot_url` (captured via microlink.io after archiving — requires `NEXT_PUBLIC_APP_URL`). HoF cards show `title` → `site_config.components[nav].props.logo_text` → `Cycle #N` fallback chain. Vote updates use Supabase Broadcast channel (`vote-updates`) instead of postgres_changes to bypass RLS.
 - **Homepage** passes the active cycle's `id` as `cycleId` to `MorphRenderer`.
 
 ### Debug Panel
