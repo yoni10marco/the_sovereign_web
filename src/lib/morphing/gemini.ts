@@ -1,6 +1,7 @@
 import type { SiteConfig } from "./config-schema";
 import { GENESIS_CONFIG } from "./genesis-config";
 import { sanitizeConfig } from "./sanitizer";
+import { resolveConfigImages } from "./pexels";
 
 const SYSTEM_PROMPT = `You are a website designer AI. You generate JSON site configurations based on user prompts.
 
@@ -134,7 +135,7 @@ Rules:
 - Always include "navigation" as the first component and "footer" as the last
 - Choose a creative and cohesive color theme that matches the user's prompt
 - Use varied component types - don't repeat the same type more than twice
-- For gallery/carousel images, ALWAYS use LoremFlickr URLs with a relevant keyword: "https://loremflickr.com/WIDTH/HEIGHT/keyword" — replace keyword with a specific word matching the image subject (e.g. "coffee", "architecture", "forest", "jazz", "ocean", "technology"), and WIDTH/HEIGHT with appropriate dimensions (e.g. 800/600 for landscape, 600/400 for thumbnail, 600/600 for square). To show a different image for the same keyword, append a lock number: "https://loremflickr.com/800/600/forest?lock=2". Examples: "https://loremflickr.com/800/600/coffee", "https://loremflickr.com/600/400/architecture?lock=3". Never use Unsplash or Picsum URLs as they are unreliable or irrelevant.
+- For ALL image fields (gallery, masonry_gallery, image_carousel, polaroid_stack, image_text_split, magazine_spread, bento_grid items, team members, testimonial avatars, logo_cloud, glassmorphism_panel background_image, scratch_card reveal_image), use this placeholder format: "pexels://KEYWORD/ORIENTATION" — where KEYWORD is a single descriptive word matching the image subject (e.g. "coffee", "architecture", "forest", "jazz", "ocean", "technology", "portrait", "cityscape") and ORIENTATION is "landscape", "portrait", or "square". Examples: "pexels://coffee/landscape", "pexels://architecture/landscape", "pexels://portrait/square". These will be resolved to real high-quality photos automatically. Never use Unsplash, Picsum, or loremflickr URLs.
 - For internal site links, use paths like /leaderboard, /submit, /hall-of-fame, /shop
 - Be creative with the content! Match the vibe and theme of the user's prompt
 - Write detailed, rich content: article bodies should be multiple paragraphs, features should have at least 6 items with substantive descriptions (2-3 sentences each), bento_grid items should have thorough descriptions, testimonials should feel personal and specific, FAQs should have thorough answers (3-5 sentences), stats should be interesting and varied, pricing plans should have 6-8 features each
@@ -240,6 +241,9 @@ export async function generateSiteConfig(
       if (imageUrls.length) injectImagesIntoConfig(fb, imageUrls);
       return { config: fb, error: msg };
     }
+
+    // Resolve pexels:// placeholders to real image URLs
+    await resolveConfigImages(sanitized);
 
     // Inject the uploaded images into the gallery component if provided
     if (imageUrls.length) {
