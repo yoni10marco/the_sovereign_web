@@ -44,7 +44,7 @@ The AI output is restricted to JSON parameters — no raw JS injection. See `src
 - **Admin client**: `src/lib/supabase/admin.ts` — uses `SUPABASE_SERVICE_ROLE_KEY` to bypass RLS. Used by all server API routes that query/mutate data.
 - **Browser client**: `src/lib/supabase/client.ts` — singleton, used only for auth state on the client side. **Do NOT use for data queries** — browser anon key + RLS causes queries to hang indefinitely. Route all data operations through server API endpoints using the admin client.
 - Auth middleware: `src/middleware.ts`
-- Auth flow: `src/app/(auth)/` route group (login, signup, callback)
+- Auth flow: `src/app/(auth)/` route group (login, signup, callback). **Email/password only** — Google OAuth has been removed.
 
 ### API Routes
 
@@ -77,7 +77,7 @@ The Gemini system prompt includes color contrast rules (WCAG AA 4.5:1) to ensure
 
 Users can create a personal space — a privately-owned morphed site live for 24 hours. No community voting; the owner submits a prompt and the AI generates the full config immediately.
 
-- **DB table**: `sovereign_spaces` — fields: `id`, `user_id`, `slug`, `title`, `prompt`, `image_urls` (text[]), `site_config` (jsonb), `status` (`pending`/`generating`/`active`/`expired`), `purchased_at`, `expires_at`, `is_active`.
+- **DB table**: `sovereign_spaces` — fields: `id`, `user_id`, `slug`, `title`, `prompt`, `image_urls` (text[]), `site_config` (jsonb), `status` (`pending`/`generating`/`active`/`expired`), `purchased_at`, `expires_at`, `is_active`. Planned: `is_public` boolean for public gallery feature.
 - **Pages**: `/spaces` (dashboard), `/spaces/create` (form), `/spaces/[id]` (renders the space via `MorphRenderer` with a fixed sub-header banner).
 - **Payment**: stubbed via Polar (`sovereign_space` product, $9.99). Space is created directly without real payment until Polar is wired up.
 - **Generation**: same `generateSiteConfig` used by the morph cycle. Config is tagged with `id: "space-<uuid>"`.

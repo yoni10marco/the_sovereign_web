@@ -8,7 +8,6 @@
 
 - [x] **Image upload on submit** — Fully implemented. Up to 5 images per proposal. Uploads via `/api/upload-image` (admin client, `proposal-images` bucket). Winner images are injected into the generated site gallery.
 - [ ] **Vercel cron job** — `/api/morph` needs a daily trigger at 00:00 UTC. Add a `vercel.json` cron config or use Vercel Cron Jobs.
-- [ ] **Google OAuth** — Login page has the button but OAuth is not configured in the Supabase dashboard. Need to add Google OAuth credentials in Supabase Auth settings.
 - [ ] **Rate limiting** — Currently using an in-memory Map (resets on redeploy). Swap to Upstash Redis for persistent rate limiting when needed at scale.
 
 ## Stubbed — Placeholder Only
@@ -17,6 +16,7 @@
 - [ ] **Propeller Ads** — `src/components/layout/AdSlot.tsx` renders placeholder divs with `data-ad-placement`. Need Propeller Ads account and script injection.
 - [ ] **Content moderation** — `src/lib/moderation/stub.ts` always returns `{ safe: true }`. Need to integrate a real moderation API (e.g., OpenAI Moderation, Google Cloud Vision) before launch.
 - [x] **Sovereign Spaces** — Fully implemented. `/spaces` dashboard, `/spaces/create` form, `/spaces/[id]` renderer. API routes: `purchase`, `generate`, `my`, `[id]`. Payment stubbed (free in beta). Uses same Gemini generation as morph cycle.
+- [ ] **Public Spaces gallery** — Allow users to make their Sovereign Space public so it appears in a browsable gallery for everyone. Needs: a `is_public` boolean on `sovereign_spaces`, a public gallery page (e.g. `/spaces/explore`), and a toggle UI on the space dashboard/detail page.
 
 ## Design & Flexibility
 
