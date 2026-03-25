@@ -29,7 +29,7 @@
 
 ## Shared Components (Cross-User)
 
-- [ ] **Shared live components** — Some components (e.g., `live_counter`, `reaction_cloud`, `interactive_poll`) should have state that is shared across all users visiting the site, not isolated per-user. Define which components need shared/global state and implement Supabase Realtime or DB-backed persistence so interactions (votes, reactions, counter increments) are visible to everyone simultaneously.
+- [x] **Shared live components** — `reaction_cloud` and `interactive_poll` now persist state in the `component_states` table (keyed by `cycle_id` + `component_index`) with Supabase Realtime subscriptions for cross-user sync. `live_counter` remains a display-only widget with animated fluctuation (intentional). At morph time, state is snapshotted into `hall_of_fame.live_state` and rendered read-only in the Hall of Fame. API routes: `GET /api/live/state`, `POST /api/live/interact`.
 
 ## Nice to Have
 

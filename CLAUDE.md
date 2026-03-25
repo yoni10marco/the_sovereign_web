@@ -60,6 +60,8 @@ The AI output is restricted to JSON parameters — no raw JS injection. See `src
 - `POST /api/spaces/generate` — Generate the site config for a space via Gemini. Accepts `{ spaceId }`. Updates `sovereign_spaces.site_config` and sets status to `active`.
 - `GET /api/spaces/my` — Fetch current user's spaces, auto-expires past-expiry records.
 - `GET /api/spaces/[id]` — Fetch a specific space's data (public, no auth required).
+- `GET /api/live/state?cycleId=` — Returns all `component_states` rows for the cycle as `{ [componentIndex]: state_data }`. No auth required.
+- `POST /api/live/interact` — Persist a live component interaction (`react`, `vote`, `increment`). Rejects writes to completed cycles with 403.
 
 ### Image Uploads
 
@@ -79,6 +81,16 @@ Users can create a personal space — a privately-owned morphed site live for 24
 - **Pages**: `/spaces` (dashboard), `/spaces/create` (form), `/spaces/[id]` (renders the space via `MorphRenderer` with a fixed sub-header banner).
 - **Payment**: stubbed via Polar (`sovereign_space` product, $9.99). Space is created directly without real payment until Polar is wired up.
 - **Generation**: same `generateSiteConfig` used by the morph cycle. Config is tagged with `id: "space-<uuid>"`.
+
+### Shared Live Component State
+
+Three components have cross-user shared state backed by Supabase: `live_counter` (display-only, animated fluctuation — no real persistence), `reaction_cloud`, and `interactive_poll`.
+
+- **DB table**: `component_states` — fields: `cycle_id` (FK to morph_cycles), `component_index` (position in config array), `component_type`, `state_data` (jsonb). Unique on `(cycle_id, component_index)`. Realtime enabled.
+- **State shapes**: `live_counter` → `{ count }`, `reaction_cloud` → `{ reactions: { [emoji]: number } }`, `interactive_poll` → `{ votes: { [option]: number }, total }`.
+- **MorphRenderer** injects `_cycleId`, `_componentIndex`, `_liveState` into these three component types. `_liveState` is only set when rendering Hall of Fame entries (triggers read-only frozen mode).
+- **Archival**: `/api/morph` snapshots `component_states` into `hall_of_fame.live_state` (jsonb) before inserting the archive row. Hall of Fame entries render components as read-only with final counts.
+- **Homepage** passes the active cycle's `id` as `cycleId` to `MorphRenderer`.
 
 ### Debug Panel
 
