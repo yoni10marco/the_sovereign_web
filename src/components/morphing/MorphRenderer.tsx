@@ -4,8 +4,12 @@ import { useEffect, useState } from "react";
 import type { SiteConfig } from "@/lib/morphing/config-schema";
 import { COMPONENT_REGISTRY } from "./registry";
 
+const LIVE_COMPONENT_TYPES = new Set(["live_counter", "reaction_cloud", "interactive_poll"]);
+
 interface MorphRendererProps {
   config: SiteConfig;
+  cycleId?: string;
+  liveState?: Record<number, unknown>;
 }
 
 function getBgPatternStyle(pattern: string | undefined, secondary: string): React.CSSProperties {
@@ -27,7 +31,7 @@ function getBgPatternStyle(pattern: string | undefined, secondary: string): Reac
   }
 }
 
-export function MorphRenderer({ config }: MorphRendererProps) {
+export function MorphRenderer({ config, cycleId, liveState }: MorphRendererProps) {
   const { theme } = config;
   const [currentSlug, setCurrentSlug] = useState<string | null>(null);
 
@@ -89,11 +93,11 @@ export function MorphRenderer({ config }: MorphRendererProps) {
           font-family: var(--morph-font-heading) !important;
         }
       `}</style>
-      {sorted.map((comp) => {
+      {sorted.map((comp, idx) => {
         const Component = COMPONENT_REGISTRY[comp.type];
         if (!Component) return null;
         // Inject navigation helpers into nav/footer components
-        const extraProps =
+        const navProps =
           comp.type === "navigation" || comp.type === "footer"
             ? {
                 _navigate: (slug: string | null) => setCurrentSlug(slug ? normalizeSlug(slug) : null),
@@ -101,7 +105,15 @@ export function MorphRenderer({ config }: MorphRendererProps) {
                 _pages: pages,
               }
             : {};
-        return <Component key={comp.id} {...comp.props} {...extraProps} />;
+        // Inject live state props into live interactive components
+        const liveProps = LIVE_COMPONENT_TYPES.has(comp.type)
+          ? {
+              _cycleId: cycleId,
+              _componentIndex: idx,
+              _liveState: liveState ? liveState[idx] : undefined,
+            }
+          : {};
+        return <Component key={comp.id} {...comp.props} {...navProps} {...liveProps} />;
       })}
     </div>
   );

@@ -30,7 +30,7 @@ export default async function HallOfFameEntryPage({ params }: { params: Promise<
           <span className="text-sm text-white/30 flex items-center gap-1"><Heart size={13} /> {entry.total_votes}</span>
         </div>
       </div>
-      <MorphRenderer config={entry.site_config} />
+      <MorphRenderer config={entry.site_config} liveState={entry.live_state ?? {}} />
     </div>
   );
 }

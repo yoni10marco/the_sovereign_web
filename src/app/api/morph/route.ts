@@ -74,6 +74,16 @@ export async function POST(request: Request) {
     })
     .eq("id", cycle.id);
 
+  // Snapshot live component state for the cycle
+  const { data: componentStates } = await supabase
+    .from("component_states")
+    .select("component_index, state_data")
+    .eq("cycle_id", cycle.id);
+  const liveStateSnapshot: Record<number, unknown> = {};
+  for (const row of componentStates ?? []) {
+    liveStateSnapshot[row.component_index] = row.state_data;
+  }
+
   // Archive to hall of fame
   await supabase.from("hall_of_fame").insert({
     cycle_id: cycle.id,
@@ -84,6 +94,7 @@ export async function POST(request: Request) {
     image_url: winner.image_url,
     total_votes: winner.vote_count,
     site_config: siteConfig,
+    live_state: liveStateSnapshot,
   });
 
   // Increment winner's total wins

@@ -1,31 +1,119 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createClient } from "@/lib/supabase/client";
 import type { InteractivePollProps } from "@/lib/morphing/config-schema";
 
-export function InteractivePoll({ question, options, allow_multiple = false }: InteractivePollProps) {
-  const [votes, setVotes] = useState<number[]>(options?.map(() => Math.floor(Math.random() * 40 + 5)) ?? []);
-  const [selected, setSelected] = useState<Set<number>>(new Set());
-  const [submitted, setSubmitted] = useState(false);
+interface InteractivePollInternalProps extends InteractivePollProps {
+  _cycleId?: string;
+  _componentIndex?: number;
+  _liveState?: { votes?: Record<string, number>; total?: number };
+}
 
-  const total = votes.reduce((a, b) => a + b, 0);
+export function InteractivePoll({
+  question,
+  options,
+  allow_multiple = false,
+  _cycleId,
+  _componentIndex,
+  _liveState,
+}: InteractivePollInternalProps) {
+  const isArchived = _liveState !== undefined;
 
-  function handleSelect(i: number) {
+  // votes keyed by option string
+  const [votes, setVotes] = useState<Record<string, number>>(() => {
+    if (isArchived && _liveState?.votes) return _liveState.votes;
+    // Seed random initial counts so the UI looks populated before real data loads
+    const seed: Record<string, number> = {};
+    for (const opt of options ?? []) seed[opt] = Math.floor(Math.random() * 40 + 5);
+    return seed;
+  });
+
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [submitted, setSubmitted] = useState(isArchived);
+
+  const total = Object.values(votes).reduce((a, b) => a + b, 0);
+
+  // Live mode: fetch real state + subscribe to realtime
+  useEffect(() => {
+    if (isArchived || !_cycleId || _componentIndex == null) return;
+
+    fetch(`/api/live/state?cycleId=${_cycleId}`)
+      .then((r) => r.json())
+      .then((data) => {
+        const state = data[_componentIndex] as { votes?: Record<string, number> } | undefined;
+        if (state?.votes) setVotes(state.votes);
+      })
+      .catch(() => {});
+
+    const supabase = createClient();
+    const channel = supabase
+      .channel(`poll-${_cycleId}-${_componentIndex}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "component_states",
+          filter: `cycle_id=eq.${_cycleId}`,
+        },
+        (payload) => {
+          const row = payload.new as { component_index: number; state_data: { votes?: Record<string, number> } };
+          if (row.component_index === _componentIndex && row.state_data?.votes) {
+            setVotes(row.state_data.votes);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [isArchived, _cycleId, _componentIndex]);
+
+  function handleSelect(opt: string) {
     if (submitted) return;
     if (allow_multiple) {
       setSelected((prev) => {
         const next = new Set(prev);
-        if (next.has(i)) { next.delete(i); } else { next.add(i); }
+        if (next.has(opt)) { next.delete(opt); } else { next.add(opt); }
         return next;
       });
     } else {
-      setSelected(new Set([i]));
+      setSelected(new Set([opt]));
     }
   }
 
   function handleSubmit() {
     if (selected.size === 0) return;
-    setVotes((prev) => prev.map((v, i) => (selected.has(i) ? v + 1 : v)));
+
+    // Optimistic update
+    setVotes((prev) => {
+      const next = { ...prev };
+      for (const opt of selected) next[opt] = (next[opt] ?? 0) + 1;
+      return next;
+    });
     setSubmitted(true);
+
+    // Persist each selected option
+    if (_cycleId && _componentIndex != null) {
+      for (const opt of selected) {
+        fetch("/api/live/interact", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            cycleId: _cycleId,
+            componentIndex: _componentIndex,
+            componentType: "interactive_poll",
+            action: { type: "vote", option: opt },
+          }),
+        })
+          .then((r) => r.json())
+          .then((data) => {
+            if (data?.votes) setVotes(data.votes as Record<string, number>);
+          })
+          .catch(() => {});
+      }
+    }
   }
 
   return (
@@ -34,22 +122,29 @@ export function InteractivePoll({ question, options, allow_multiple = false }: I
         className="max-w-lg mx-auto p-8 border border-current/10"
         style={{ backgroundColor: "var(--morph-secondary)", borderRadius: "var(--morph-radius)" }}
       >
-        <h3 className="text-xl font-bold mb-6" style={{ color: "var(--morph-text)" }}>{question}</h3>
+        <h3 className="text-xl font-bold mb-2" style={{ color: "var(--morph-text)" }}>{question}</h3>
+        {isArchived && (
+          <p className="text-xs opacity-50 mb-5" style={{ color: "var(--morph-text)" }}>Final Results</p>
+        )}
+        {!isArchived && <div className="mb-6" />}
 
         <div className="space-y-3">
-          {options?.map((opt, i) => {
-            const pct = total > 0 ? Math.round((votes[i] / total) * 100) : 0;
-            const isSelected = selected.has(i);
+          {options?.map((opt) => {
+            const v = votes[opt] ?? 0;
+            const pct = total > 0 ? Math.round((v / total) * 100) : 0;
+            const isSelected = selected.has(opt);
             return (
               <button
-                key={i}
-                onClick={() => handleSelect(i)}
+                key={opt}
+                onClick={() => handleSelect(opt)}
+                disabled={submitted}
                 className="relative w-full text-left px-4 py-3 overflow-hidden border transition-colors"
                 style={{
                   borderRadius: "var(--morph-radius)",
                   borderColor: isSelected ? "var(--morph-primary)" : "transparent",
                   backgroundColor: "var(--morph-bg)",
                   color: "var(--morph-text)",
+                  cursor: submitted ? "default" : "pointer",
                 }}
               >
                 {/* Progress bar */}
