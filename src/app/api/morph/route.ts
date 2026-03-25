@@ -90,6 +90,7 @@ export async function POST(request: Request) {
     cycle_number: cycle.cycle_number,
     winner_user_id: winner.user_id,
     winner_username: winner.profiles?.username ?? "Unknown",
+    title: winner.title ?? null,
     prompt: winner.prompt,
     image_url: winner.image_url,
     total_votes: winner.vote_count,
