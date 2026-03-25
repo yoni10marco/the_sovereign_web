@@ -77,8 +77,9 @@ The Gemini system prompt includes color contrast rules (WCAG AA 4.5:1) to ensure
 
 Users can create a personal space — a privately-owned morphed site live for 24 hours. No community voting; the owner submits a prompt and the AI generates the full config immediately.
 
-- **DB table**: `sovereign_spaces` — fields: `id`, `user_id`, `slug`, `title`, `prompt`, `image_urls` (text[]), `site_config` (jsonb), `status` (`pending`/`generating`/`active`/`expired`), `purchased_at`, `expires_at`, `is_active`. Planned: `is_public` boolean for public gallery feature.
-- **Pages**: `/spaces` (dashboard), `/spaces/create` (form), `/spaces/[id]` (renders the space via `MorphRenderer` with a fixed sub-header banner).
+- **DB table**: `sovereign_spaces` — fields: `id`, `user_id`, `slug`, `title`, `prompt`, `image_urls` (text[]), `site_config` (jsonb), `status` (`pending`/`generating`/`active`/`expired`), `purchased_at`, `expires_at`, `is_active`, `is_public` (boolean, default false).
+- **Pages**: `/spaces` (dashboard), `/spaces/create` (form), `/spaces/[id]` (renders the space via `MorphRenderer` with a fixed sub-header banner; owner sees a Public/Private toggle), `/spaces/explore` (public gallery of all `is_public=true` active spaces).
+- **Public toggle**: `POST /api/spaces/[id]/toggle-public` — owner-only, flips `is_public`. `PublicToggle` client component in `src/components/spaces/PublicToggle.tsx`.
 - **Payment**: stubbed via Polar (`sovereign_space` product, $9.99). Space is created directly without real payment until Polar is wired up.
 - **Generation**: same `generateSiteConfig` used by the morph cycle. Config is tagged with `id: "space-<uuid>"`.
 
@@ -109,3 +110,4 @@ Required in `.env.local`:
 - `GEMINI_API_KEY`
 - `PEXELS_API_KEY` — Pexels API key for image resolution. Without this, falls back to loremflickr.
 - `NEXT_PUBLIC_DEBUG_PANEL` — set to `"true"` to enable debug panel
+- `NEXT_PUBLIC_APP_URL` — full URL of the deployment (e.g. `https://thesovereignweb.com`). Used by `/api/morph` to capture Hall of Fame screenshots via microlink.io.

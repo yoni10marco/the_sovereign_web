@@ -16,7 +16,7 @@
 - [ ] **Propeller Ads** — `src/components/layout/AdSlot.tsx` renders placeholder divs with `data-ad-placement`. Need Propeller Ads account and script injection.
 - [ ] **Content moderation** — `src/lib/moderation/stub.ts` always returns `{ safe: true }`. Need to integrate a real moderation API (e.g., OpenAI Moderation, Google Cloud Vision) before launch.
 - [x] **Sovereign Spaces** — Fully implemented. `/spaces` dashboard, `/spaces/create` form, `/spaces/[id]` renderer. API routes: `purchase`, `generate`, `my`, `[id]`. Payment stubbed (free in beta). Uses same Gemini generation as morph cycle.
-- [ ] **Public Spaces gallery** — Allow users to make their Sovereign Space public so it appears in a browsable gallery for everyone. Needs: a `is_public` boolean on `sovereign_spaces`, a public gallery page (e.g. `/spaces/explore`), and a toggle UI on the space dashboard/detail page.
+- [x] **Public Spaces gallery** — Fully implemented. `is_public` boolean on `sovereign_spaces` (migration applied). `/spaces/explore` gallery page, `POST /api/spaces/[id]/toggle-public` endpoint, `PublicToggle` button shown in the space banner for the owner.
 
 ## Design & Flexibility
 
@@ -33,6 +33,6 @@
 
 ## Nice to Have
 
-- [ ] **Hall of Fame screenshots** — `screenshot_url` column exists but nothing captures screenshots. Could use Puppeteer/Playwright or a screenshot API service.
-- [ ] **Realtime vote updates** — `LiveVoteCount` component subscribes to Supabase Realtime but may not work due to the RLS issue. Test after fixing browser client.
+- [x] **Hall of Fame screenshots** — `/api/morph` now fires an async microlink.io request after archiving, stores the URL in `hall_of_fame.screenshot_url`. Hall of Fame list shows screenshot (falls back to proposal image). Requires `NEXT_PUBLIC_APP_URL` env var in production.
+- [x] **Realtime vote updates** — Fixed. `LiveVoteCount` now subscribes to a Supabase Broadcast channel (`vote-updates`). `/api/vote` broadcasts `{ proposalId, voteCount }` after each vote via admin client, bypassing RLS entirely.
 - [ ] **Anti-snipe extension** — Logic exists in vote API but needs testing. Should extend cycle by 60s if vote comes in during final 60s.

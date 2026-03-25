@@ -16,17 +16,14 @@ export function LiveVoteCount({ proposalId, initialCount }: LiveVoteCountProps) 
     const supabase = createClient();
 
     const channel = supabase
-      .channel(`votes-${proposalId}`)
+      .channel("vote-updates")
       .on(
-        "postgres_changes",
-        {
-          event: "UPDATE",
-          schema: "public",
-          table: "proposals",
-          filter: `id=eq.${proposalId}`,
-        },
-        (payload: { new: { vote_count: number } }) => {
-          setCount(payload.new.vote_count);
+        "broadcast",
+        { event: "vote" },
+        (payload: { payload: { proposalId: string; voteCount: number } }) => {
+          if (payload.payload.proposalId === proposalId) {
+            setCount(payload.payload.voteCount);
+          }
         }
       )
       .subscribe();

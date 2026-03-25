@@ -85,7 +85,7 @@ export async function POST(request: Request) {
   }
 
   // Archive to hall of fame
-  await supabase.from("hall_of_fame").insert({
+  const { data: hofEntry } = await supabase.from("hall_of_fame").insert({
     cycle_id: cycle.id,
     cycle_number: cycle.cycle_number,
     winner_user_id: winner.user_id,
@@ -95,7 +95,29 @@ export async function POST(request: Request) {
     total_votes: winner.vote_count,
     site_config: siteConfig,
     live_state: liveStateSnapshot,
-  });
+  }).select("id").single();
+
+  // Async screenshot capture via microlink.io (fire-and-forget, does not block morph)
+  if (hofEntry?.id) {
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL
+      ?? (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null);
+    if (appUrl) {
+      const entryUrl = `${appUrl}/hall-of-fame/${hofEntry.id}`;
+      fetch(`https://api.microlink.io/?url=${encodeURIComponent(entryUrl)}&screenshot=true&meta=false`)
+        .then((r) => r.json())
+        .then((data) => {
+          const screenshotUrl: string | undefined = data?.data?.screenshot?.url;
+          if (screenshotUrl) {
+            supabase
+              .from("hall_of_fame")
+              .update({ screenshot_url: screenshotUrl })
+              .eq("id", hofEntry.id)
+              .then(() => {});
+          }
+        })
+        .catch(() => {});
+    }
+  }
 
   // Increment winner's total wins
   await supabase

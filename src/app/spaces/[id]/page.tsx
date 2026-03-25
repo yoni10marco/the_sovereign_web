@@ -1,7 +1,9 @@
 import { createAdminClient } from "@/lib/supabase/admin";
+import { createClient } from "@/lib/supabase/server";
 import { MorphRenderer } from "@/components/morphing/MorphRenderer";
 import { GENESIS_CONFIG } from "@/lib/morphing/genesis-config";
 import type { SiteConfig } from "@/lib/morphing/config-schema";
+import { PublicToggle } from "@/components/spaces/PublicToggle";
 import Link from "next/link";
 import { Castle, ArrowLeft, Clock } from "lucide-react";
 
@@ -15,9 +17,12 @@ export default async function SpacePage({ params }: Props) {
   const { id } = await params;
   const admin = createAdminClient();
 
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
   const { data: space } = await admin
     .from("sovereign_spaces")
-    .select("id, title, prompt, site_config, status, expires_at, user_id")
+    .select("id, title, prompt, site_config, status, expires_at, user_id, is_public")
     .eq("id", id)
     .single();
 
@@ -68,6 +73,7 @@ export default async function SpacePage({ params }: Props) {
   }
 
   const config: SiteConfig = space.site_config ?? GENESIS_CONFIG;
+  const isOwner = user?.id === space.user_id;
 
   return (
     <div>
@@ -80,6 +86,9 @@ export default async function SpacePage({ params }: Props) {
             <span className="text-red-400 text-xs">(expired)</span>
           ) : (
             <span className="text-white/40 text-xs">{hoursLeft}h remaining</span>
+          )}
+          {isOwner && !isExpired && (
+            <PublicToggle spaceId={space.id} initialIsPublic={space.is_public ?? false} />
           )}
         </div>
         <Link href="/spaces" className="text-white/50 hover:text-white text-xs transition-colors">

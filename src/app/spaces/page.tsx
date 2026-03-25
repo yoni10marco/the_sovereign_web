@@ -97,12 +97,20 @@ export default function SpacesPage() {
             Your own corner of The Sovereign Web. Full creative control, no voting required.
           </p>
         </div>
-        <Link
-          href="/spaces/create"
-          className="shrink-0 px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-black font-bold rounded-xl transition-colors text-sm"
-        >
-          + New Space
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link
+            href="/spaces/explore"
+            className="shrink-0 px-5 py-2.5 bg-white/10 hover:bg-white/15 text-white font-semibold rounded-xl transition-colors text-sm"
+          >
+            Explore
+          </Link>
+          <Link
+            href="/spaces/create"
+            className="shrink-0 px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-black font-bold rounded-xl transition-colors text-sm"
+          >
+            + New Space
+          </Link>
+        </div>
       </div>
 
       {/* Pricing info */}

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { spendLikes } from "@/lib/pulse/engine";
 import { rateLimit } from "@/lib/rate-limit";
 import { ANTI_SNIPE_WINDOW_SECONDS, ANTI_SNIPE_EXTENSION_SECONDS } from "@/lib/constants";
@@ -80,5 +81,17 @@ export async function POST(request: Request) {
     .eq("id", proposalId)
     .single();
 
-  return NextResponse.json({ voteCount: updated?.vote_count ?? 0 });
+  const voteCount = updated?.vote_count ?? 0;
+
+  // Broadcast update to all connected clients (bypasses RLS)
+  const admin = createAdminClient();
+  await admin
+    .channel("vote-updates")
+    .send({
+      type: "broadcast",
+      event: "vote",
+      payload: { proposalId, voteCount },
+    });
+
+  return NextResponse.json({ voteCount });
 }

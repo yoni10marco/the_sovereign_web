@@ -31,10 +31,13 @@ export default async function HallOfFamePage() {
             href={`/hall-of-fame/${entry.id}`}
             className="block bg-white/5 border border-white/10 rounded-xl overflow-hidden hover:border-purple-500/30 transition-colors group"
           >
-            {entry.image_url && (
-              <img src={entry.image_url} alt={entry.prompt ?? ""} className="w-full h-40 object-cover" />
-            )}
-            {!entry.image_url && (
+            {(entry.screenshot_url || entry.image_url) ? (
+              <img
+                src={entry.screenshot_url ?? entry.image_url}
+                alt={entry.prompt ?? ""}
+                className="w-full h-40 object-cover"
+              />
+            ) : (
               <div className="w-full h-40 bg-gradient-to-br from-purple-900/30 to-purple-600/10 flex items-center justify-center">
                 <Globe size={40} className="text-purple-400/40" />
               </div>
