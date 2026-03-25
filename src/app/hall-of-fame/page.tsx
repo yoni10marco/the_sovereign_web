@@ -48,7 +48,10 @@ export default async function HallOfFamePage() {
                 <span className="text-xs text-white/40 flex items-center gap-1"><Heart size={11} />  {entry.total_votes ?? 0}</span>
               </div>
               <p className="font-semibold text-sm text-white line-clamp-1">
-                {entry.title ?? `Cycle #${entry.cycle_number}`}
+                {entry.title
+                  ?? (entry.site_config?.components as { type: string; logo_text?: string }[] | undefined)
+                      ?.find((c) => c.type === "navigation")?.logo_text
+                  ?? `Cycle #${entry.cycle_number}`}
               </p>
               <p className="text-xs text-white/40 mt-1">Winner: {entry.winner_username}</p>
             </div>
