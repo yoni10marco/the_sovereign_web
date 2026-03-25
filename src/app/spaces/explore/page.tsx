@@ -9,7 +9,7 @@ export default async function ExploreSpacesPage() {
 
   const { data: spaces } = await admin
     .from("sovereign_spaces")
-    .select("id, title, prompt, expires_at, purchased_at")
+    .select("id, title, expires_at, purchased_at")
     .eq("is_public", true)
     .eq("status", "active")
     .order("purchased_at", { ascending: false });
@@ -51,8 +51,7 @@ export default async function ExploreSpacesPage() {
                 <Castle size={36} className="text-amber-400/40 group-hover:text-amber-400/60 transition-colors" />
               </div>
               <div className="p-4">
-                <h3 className="font-semibold text-base mb-1 line-clamp-1">{space.title}</h3>
-                <p className="text-white/40 text-sm line-clamp-2 mb-3">{space.prompt}</p>
+                <h3 className="font-semibold text-base mb-3 line-clamp-1">{space.title}</h3>
                 <div className="flex items-center justify-between text-xs text-white/30">
                   <span>{hoursLeft}h remaining</span>
                   <span className="text-amber-400 font-semibold">Visit Space →</span>
