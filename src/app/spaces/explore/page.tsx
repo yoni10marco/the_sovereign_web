@@ -2,7 +2,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import Link from "next/link";
 import { Castle, Globe } from "lucide-react";
 
-export const revalidate = 60;
+export const revalidate = 0;
 
 export default async function ExploreSpacesPage() {
   const admin = createAdminClient();

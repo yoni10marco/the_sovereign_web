@@ -29,10 +29,12 @@ export async function middleware(request: NextRequest) {
   await supabase.auth.getUser();
 
   // Protect routes that require auth
-  const protectedPaths = ["/submit", "/shop", "/spaces"];
-  const isProtected = protectedPaths.some((p) =>
-    request.nextUrl.pathname.startsWith(p)
-  );
+  // /spaces/explore and /spaces/[id] are public — only dashboard and create require auth
+  const pathname = request.nextUrl.pathname;
+  const isProtected =
+    ["/submit", "/shop"].some((p) => pathname.startsWith(p)) ||
+    pathname === "/spaces" ||
+    pathname === "/spaces/create";
 
   if (isProtected) {
     const {
