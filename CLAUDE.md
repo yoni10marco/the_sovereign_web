@@ -20,7 +20,7 @@ The Sovereign Web is a generative social platform where the website morphs every
 - **Gemini API** (`gemini-3-flash-preview`) for morphing config generation
 - **Polar** for payments (stubbed)
 - **Google Fonts** — loaded dynamically per morph
-- **Unsplash** — gallery images use `source.unsplash.com` URLs (no API key)
+- **Pexels API** — images resolved server-side via `src/lib/morphing/pexels.ts`. Gemini outputs `pexels://keyword/orientation` placeholders; `resolveConfigImages()` fetches real CDN URLs after generation. Falls back to loremflickr if `PEXELS_API_KEY` is not set.
 
 ## Architecture
 
@@ -67,6 +67,8 @@ Proposals support up to 5 reference images. The submit page uploads each file to
 
 When a proposal wins, `generateSiteConfig` in `src/lib/morphing/gemini.ts` passes all image URLs to Gemini and also post-processes the output with `injectImagesIntoConfig` to guarantee the images appear in the gallery component regardless of what Gemini generated.
 
+**Image resolution pipeline**: After Gemini returns a config, `resolveConfigImages()` (in `src/lib/morphing/pexels.ts`) scans every image field across all components and pages, replaces `pexels://keyword/orientation` placeholders with real Pexels CDN URLs via the Pexels API, then `injectImagesIntoConfig` adds any user-uploaded images. All image components use `SafeImage` (in `src/components/morphing/SafeImage.tsx`) which shows an `ImageOff` placeholder on load failure instead of a broken icon. `HeroSection` uses a hidden probe `<img>` to detect background image failures and gracefully removes the background.
+
 The Gemini system prompt includes color contrast rules (WCAG AA 4.5:1) to ensure readable color combinations, unless the user's prompt explicitly requests specific colors.
 
 ### Sovereign Spaces
@@ -93,4 +95,5 @@ Required in `.env.local`:
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 - `SUPABASE_SERVICE_ROLE_KEY`
 - `GEMINI_API_KEY`
+- `PEXELS_API_KEY` — Pexels API key for image resolution. Without this, falls back to loremflickr.
 - `NEXT_PUBLIC_DEBUG_PANEL` — set to `"true"` to enable debug panel
