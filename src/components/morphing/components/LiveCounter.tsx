@@ -48,7 +48,7 @@ export function LiveCounter({
           table: "component_states",
           filter: `cycle_id=eq.${_cycleId}`,
         },
-        (payload) => {
+        (payload: { new: unknown }) => {
           const row = payload.new as { component_index: number; state_data: { count?: number } };
           if (row.component_index === _componentIndex && row.state_data?.count != null) {
             setCount(row.state_data.count);
