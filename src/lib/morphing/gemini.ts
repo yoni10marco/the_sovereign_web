@@ -134,7 +134,7 @@ Rules:
 - Always include "navigation" as the first component and "footer" as the last
 - Choose a creative and cohesive color theme that matches the user's prompt
 - Use varied component types - don't repeat the same type more than twice
-- For gallery/carousel images, ALWAYS use keyword-based Unsplash URLs: "https://source.unsplash.com/600x400/?keyword" — replace "keyword" with a specific relevant word (e.g. "coffee", "architecture", "forest", "jazz"). Never use photo ID URLs like "https://images.unsplash.com/photo-..." as those specific IDs may not exist.
+- For gallery/carousel images, ALWAYS use Picsum Photos URLs with a descriptive seed: "https://picsum.photos/seed/SEED/WIDTH/HEIGHT" — replace SEED with a short descriptive word related to the image subject (e.g. "coffee", "city", "forest", "jazz", "ocean", "mountains"), and WIDTH/HEIGHT with appropriate dimensions (e.g. 800/600 for landscape, 600/800 for portrait, 600/600 for square). Examples: "https://picsum.photos/seed/forest/800/600", "https://picsum.photos/seed/city/600/400". Never use Unsplash URLs (source.unsplash.com or images.unsplash.com) as they are unreliable.
 - For internal site links, use paths like /leaderboard, /submit, /hall-of-fame, /shop
 - Be creative with the content! Match the vibe and theme of the user's prompt
 - Write detailed, rich content: article bodies should be multiple paragraphs, features should have at least 6 items with substantive descriptions (2-3 sentences each), bento_grid items should have thorough descriptions, testimonials should feel personal and specific, FAQs should have thorough answers (3-5 sentences), stats should be interesting and varied, pricing plans should have 6-8 features each
