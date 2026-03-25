@@ -59,6 +59,28 @@ export async function POST(req: NextRequest) {
       .update({ site_config: config, status: "active" })
       .eq("id", spaceId);
 
+    // Capture screenshot via microlink.io after space is live
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL
+      ?? (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null);
+    if (appUrl) {
+      try {
+        const spaceUrl = `${appUrl}/spaces/${space.id}`;
+        const res = await fetch(
+          `https://api.microlink.io/?url=${encodeURIComponent(spaceUrl)}&screenshot=true&meta=false`
+        );
+        const data = await res.json();
+        const screenshotUrl: string | undefined = data?.data?.screenshot?.url;
+        if (screenshotUrl) {
+          await admin
+            .from("sovereign_spaces")
+            .update({ screenshot_url: screenshotUrl })
+            .eq("id", spaceId);
+        }
+      } catch {
+        // screenshot failure is non-fatal
+      }
+    }
+
     return NextResponse.json({ spaceId: space.id });
   } catch (err) {
     console.error("Space generation error:", err);

@@ -9,7 +9,7 @@ export default async function ExploreSpacesPage() {
 
   const { data: spaces } = await admin
     .from("sovereign_spaces")
-    .select("id, title, expires_at, purchased_at")
+    .select("id, title, expires_at, purchased_at, screenshot_url")
     .eq("is_public", true)
     .eq("status", "active")
     .order("purchased_at", { ascending: false });
@@ -47,9 +47,13 @@ export default async function ExploreSpacesPage() {
               href={`/spaces/${space.id}`}
               className="block bg-white/5 border border-white/10 rounded-xl overflow-hidden hover:border-amber-500/40 transition-colors group"
             >
-              <div className="w-full h-36 bg-gradient-to-br from-amber-900/20 to-amber-600/5 flex items-center justify-center">
-                <Castle size={36} className="text-amber-400/40 group-hover:text-amber-400/60 transition-colors" />
-              </div>
+              {space.screenshot_url ? (
+                <img src={space.screenshot_url} alt={space.title} className="w-full h-36 object-cover" />
+              ) : (
+                <div className="w-full h-36 bg-gradient-to-br from-amber-900/20 to-amber-600/5 flex items-center justify-center">
+                  <Castle size={36} className="text-amber-400/40 group-hover:text-amber-400/60 transition-colors" />
+                </div>
+              )}
               <div className="p-4">
                 <h3 className="font-semibold text-base mb-3 line-clamp-1">{space.title}</h3>
                 <div className="flex items-center justify-between text-xs text-white/30">
