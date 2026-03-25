@@ -1,4 +1,5 @@
 import type { BentoGridProps } from "@/lib/morphing/config-schema";
+import { SafeImage } from "../SafeImage";
 
 export function BentoGrid({ items }: BentoGridProps) {
   return (
@@ -15,7 +16,7 @@ export function BentoGrid({ items }: BentoGridProps) {
             }}
           >
             {item.image && (
-              <img src={item.image} alt={item.title} className="w-full h-32 object-cover rounded mb-4" />
+              <SafeImage src={item.image} alt={item.title} className="w-full h-32 object-cover rounded mb-4" />
             )}
             <h3 className="text-lg font-semibold">{item.title}</h3>
             <p className="mt-2 text-sm opacity-70">{item.description}</p>

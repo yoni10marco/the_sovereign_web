@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import type { PolaroidStackProps } from "@/lib/morphing/config-schema";
+import { SafeImage } from "../SafeImage";
 
 const BASE_ROTATIONS = [-6, 4, -3, 7, -5, 2, -8, 5];
 
@@ -37,7 +38,7 @@ export function PolaroidStack({ title, images }: PolaroidStackProps) {
                   left: isActive ? 0 : i * 1,
                 }}
               >
-                <img
+                <SafeImage
                   src={img.src}
                   alt={img.alt}
                   className="w-full object-cover"
@@ -63,7 +64,7 @@ export function PolaroidStack({ title, images }: PolaroidStackProps) {
                 borderRadius: "4px",
               }}
             >
-              <img src={img.src} alt={img.alt} className="w-full h-full object-cover" />
+              <SafeImage src={img.src} alt={img.alt} className="w-full h-full object-cover" />
             </button>
           ))}
         </div>

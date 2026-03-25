@@ -1,10 +1,11 @@
 import type { ArticleProps } from "@/lib/morphing/config-schema";
+import { SafeImage } from "../SafeImage";
 
 export function ArticleBlock({ title, body, image }: ArticleProps) {
   return (
     <article className="max-w-3xl mx-auto px-4 sm:px-8 py-12 sm:py-16">
       {image && (
-        <img src={image} alt={title} className="w-full h-44 sm:h-56 md:h-64 object-cover rounded-lg mb-6 sm:mb-8" />
+        <SafeImage src={image} alt={title} className="w-full h-44 sm:h-56 md:h-64 object-cover rounded-lg mb-6 sm:mb-8" />
       )}
       <h2 className="text-2xl sm:text-3xl font-bold" style={{ color: "var(--morph-primary)" }}>
         {title}

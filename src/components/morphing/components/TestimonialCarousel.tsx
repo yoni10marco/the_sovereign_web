@@ -1,4 +1,5 @@
 import type { TestimonialProps } from "@/lib/morphing/config-schema";
+import { SafeImage } from "../SafeImage";
 
 export function TestimonialCarousel({ testimonials }: TestimonialProps) {
   return (
@@ -13,7 +14,7 @@ export function TestimonialCarousel({ testimonials }: TestimonialProps) {
             <p className="text-base sm:text-lg italic opacity-85">&ldquo;{t.quote}&rdquo;</p>
             <div className="mt-4 flex items-center gap-3">
               {t.avatar && (
-                <img src={t.avatar} alt={t.author} className="w-10 h-10 rounded-full object-cover" />
+                <SafeImage src={t.avatar} alt={t.author} className="w-10 h-10 rounded-full object-cover" />
               )}
               <div>
                 <p className="font-semibold text-sm">{t.author}</p>

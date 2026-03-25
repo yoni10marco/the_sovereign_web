@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import type { ScratchCardProps } from "@/lib/morphing/config-schema";
+import { SafeImage } from "../SafeImage";
 
 export function ScratchCard({ title = "Scratch to Reveal!", cover_text = "Scratch here...", reveal_text, reveal_image }: ScratchCardProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -66,7 +67,7 @@ export function ScratchCard({ title = "Scratch to Reveal!", cover_text = "Scratc
             }}
           >
             {reveal_image
-              ? <img src={reveal_image} alt="Revealed" className="w-full h-full object-cover" />
+              ? <SafeImage src={reveal_image} alt="Revealed" className="w-full h-full object-cover" />
               : <span>{reveal_text ?? "You won!"}</span>
             }
           </div>

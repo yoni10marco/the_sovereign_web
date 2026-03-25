@@ -1,4 +1,5 @@
 import type { TeamProps } from "@/lib/morphing/config-schema";
+import { SafeImage } from "../SafeImage";
 
 export function TeamGrid({ members }: TeamProps) {
   return (
@@ -7,7 +8,7 @@ export function TeamGrid({ members }: TeamProps) {
         {members?.map((m, i) => (
           <div key={i} className="text-center">
             {m.image ? (
-              <img src={m.image} alt={m.name} className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover mx-auto" />
+              <SafeImage src={m.image} alt={m.name} className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover mx-auto" />
             ) : (
               <div
                 className="w-20 h-20 sm:w-24 sm:h-24 rounded-full mx-auto flex items-center justify-center text-2xl font-bold"

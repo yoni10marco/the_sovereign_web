@@ -1,4 +1,5 @@
 import type { MagazineSpreadProps } from "@/lib/morphing/config-schema";
+import { SafeImage } from "../SafeImage";
 
 export function MagazineSpread({ headline, kicker, body, image, pull_quote, author, tag }: MagazineSpreadProps) {
   return (
@@ -35,7 +36,7 @@ export function MagazineSpread({ headline, kicker, body, image, pull_quote, auth
         {/* Main image */}
         {image && (
           <div className="lg:col-span-5">
-            <img src={image} alt={headline} className="w-full h-auto object-cover shadow-lg" style={{ borderRadius: "var(--morph-radius)" }} />
+            <SafeImage src={image} alt={headline} className="w-full h-auto object-cover shadow-lg" style={{ borderRadius: "var(--morph-radius)" }} />
           </div>
         )}
 
