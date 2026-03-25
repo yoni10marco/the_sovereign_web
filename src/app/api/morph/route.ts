@@ -97,25 +97,27 @@ export async function POST(request: Request) {
     live_state: liveStateSnapshot,
   }).select("id").single();
 
-  // Async screenshot capture via microlink.io (fire-and-forget, does not block morph)
+  // Screenshot capture via microlink.io (awaited so it completes before function exits)
   if (hofEntry?.id) {
     const appUrl = process.env.NEXT_PUBLIC_APP_URL
       ?? (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null);
     if (appUrl) {
-      const entryUrl = `${appUrl}/hall-of-fame/${hofEntry.id}`;
-      fetch(`https://api.microlink.io/?url=${encodeURIComponent(entryUrl)}&screenshot=true&meta=false`)
-        .then((r) => r.json())
-        .then((data) => {
-          const screenshotUrl: string | undefined = data?.data?.screenshot?.url;
-          if (screenshotUrl) {
-            supabase
-              .from("hall_of_fame")
-              .update({ screenshot_url: screenshotUrl })
-              .eq("id", hofEntry.id)
-              .then(() => {});
-          }
-        })
-        .catch(() => {});
+      try {
+        const entryUrl = `${appUrl}/hall-of-fame/${hofEntry.id}`;
+        const res = await fetch(
+          `https://api.microlink.io/?url=${encodeURIComponent(entryUrl)}&screenshot=true&meta=false`
+        );
+        const data = await res.json();
+        const screenshotUrl: string | undefined = data?.data?.screenshot?.url;
+        if (screenshotUrl) {
+          await supabase
+            .from("hall_of_fame")
+            .update({ screenshot_url: screenshotUrl })
+            .eq("id", hofEntry.id);
+        }
+      } catch {
+        // screenshot failure is non-fatal
+      }
     }
   }
 
